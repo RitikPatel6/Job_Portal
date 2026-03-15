@@ -1,0 +1,117 @@
+/* ===== GENERAL ===== */
+
+body{
+font-family:'Poppins',sans-serif;
+background:#f4f6f9;
+margin:0;
+color:#1e293b;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:0 20px;
+}
+
+/* ===== BANNER ===== */
+
+.contact-banner{
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+text-align:center;
+padding:80px 20px;
+}
+
+.contact-banner h1{
+font-size:42px;
+color:#f97316;
+margin-bottom:10px;
+}
+
+.contact-banner p{
+font-size:18px;
+color:#cbd5f5;
+}
+
+/* ===== CONTAINER ===== */
+
+.contact-container{
+display:flex;
+gap:40px;
+margin-top:60px;
+flex-wrap:wrap;
+}
+
+/* ===== CONTACT INFO ===== */
+
+.contact-info{
+flex:1;
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.info-card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+.info-card h3{
+margin-bottom:10px;
+color:#f97316;
+}
+
+.info-card p{
+color:#64748b;
+}
+
+/* ===== FORM ===== */
+
+.contact-form{
+flex:2;
+background:white;
+padding:35px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+.contact-form h2{
+margin-bottom:20px;
+}
+
+.contact-form input,
+.contact-form textarea{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border-radius:8px;
+border:1px solid #ddd;
+font-size:14px;
+}
+
+.contact-btn{
+background:#f97316;
+color:white;
+padding:12px 20px;
+border:none;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+.contact-btn:hover{
+background:#ea580c;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:900px){
+
+.contact-container{
+flex-direction:column;
+}
+
+}

@@ -1,0 +1,52 @@
+
+/* ===============================
+   MANAGE JOB LIST PAGE
+================================ */
+
+.managejob-page {
+  padding: 40px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+/* Reuse .form-card, .form-grid, .form-group, .submit-btn */
+/* Reuse .job-card, .job-table, .status-active, .status-inactive, .btn-delete */
+
+.managejob-form {
+  margin-top: 15px;
+}
+
+/* ===============================
+   STATUS BADGES
+================================ */
+
+.status-open {
+  background-color: #198754;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.status-closed {
+  background-color: #6c757d;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+/* Toggle Button */
+.btn-toggle {
+  background-color: #ffc107;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-right: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-toggle:hover {
+  background-color: #e0a800;
+}

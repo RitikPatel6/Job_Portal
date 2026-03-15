@@ -1,0 +1,104 @@
+/* ===============================
+   JOB LIST PAGE
+================================ */
+
+.job-container {
+  padding: 40px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+.job-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.job-header {
+  background-color: #8b8d90;
+  color: white;
+  padding: 18px 24px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.job-table-wrapper {
+  overflow-x: auto;
+}
+
+.job-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.job-table th {
+  background-color: #2f66d0;
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.job-table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.job-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Action Column Proper Width */
+.action-column {
+  min-width: 160px;
+  text-align: left;
+}
+
+/* Button Alignment */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Status */
+.status-active {
+  background-color: #198754;
+  color: white;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+/* Buttons */
+.btn-edit {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-edit:hover {
+  background-color: #0b5ed7;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-delete:hover {
+  background-color: #bb2d3b;
+}

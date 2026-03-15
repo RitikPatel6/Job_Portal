@@ -1,0 +1,143 @@
+/* =====================================
+   VIEW JOB LIST PAGE
+===================================== */
+
+.job-container {
+  padding: 40px;
+  background-color: #f1f5f9;
+  min-height: 100vh;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.job-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* Header */
+.job-header {
+  background: linear-gradient(90deg, #1e3a8a, #2563eb);
+  color: #ffffff;
+  padding: 18px 24px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Table Wrapper */
+.job-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Table */
+.job-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table Head */
+.job-table th {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Table Body */
+.job-table td {
+  padding: 14px;
+  font-size: 14px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.job-table tr:hover {
+  background-color: #f9fafb;
+  transition: 0.2s ease;
+}
+
+/* Action Column */
+.action-column {
+  min-width: 180px;
+}
+
+/* =====================================
+   STATUS BADGES
+===================================== */
+
+.status-active {
+  background-color: #16a34a;
+  color: #ffffff;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 6px;
+  display: inline-block;
+}
+
+.status-inactive {
+  background-color: #6b7280;
+  color: #ffffff;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 6px;
+  display: inline-block;
+}
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+.btn-edit {
+  padding: 6px 14px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background-color: #1d4ed8;
+  color:#e5e7eb;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  padding: 6px 14px;
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* =====================================
+   NO DATA ROW
+===================================== */
+
+.no-data {
+  text-align: center;
+  padding: 24px;
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 14px;
+}

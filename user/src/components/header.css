@@ -1,0 +1,187 @@
+/* ===== HEADER ===== */
+
+.header-area{
+width:100%;
+background:#0f172a;
+position:sticky;
+top:0;
+z-index:999;
+}
+
+.main-header-area{
+max-width:1200px;
+margin:auto;
+padding:15px 20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+/* ===== LOGO ===== */
+
+.logo img{
+height:45px;
+}
+
+/* ===== MENU ===== */
+
+.main-menu ul{
+display:flex;
+gap:35px;
+list-style:none;
+margin:0;
+padding:0;
+align-items:center;
+}
+
+.main-menu ul li{
+position:relative;
+}
+
+.main-menu ul li a,
+.main-menu ul li span{
+color:#ffffff;
+text-decoration:none;
+font-size:16px;
+font-weight:500;
+cursor:pointer;
+transition:0.3s;
+}
+
+.main-menu ul li a:hover,
+.main-menu ul li span:hover{
+color:#00d4ff;
+}
+
+/* ===== DROPDOWN ===== */
+
+.submenu{
+position:absolute;
+top:35px;
+left:0;
+background:#1e293b;
+width:180px;
+border-radius:6px;
+display:none;
+flex-direction:column;
+}
+
+.submenu li{
+padding:0;
+}
+
+.submenu li a{
+display:block;
+padding:10px 15px;
+font-size:14px;
+}
+
+.submenu li a:hover{
+background:#334155;
+}
+
+/* show dropdown */
+
+.dropdown:hover .submenu{
+display:block;
+}
+
+/* ===== RIGHT BUTTONS ===== */
+
+.header-buttons{
+display:flex;
+align-items:center;
+gap:15px;
+}
+.Header-buttons{
+display:flex;
+align-items:center;
+gap:15px;
+}
+/* login button */
+
+.login-btn{
+background:#000;
+color:#fff;
+padding:9px 20px;
+border-radius:6px;
+text-decoration:none;
+font-weight:500;
+white-space:nowrap;
+transition:0.3s;
+}
+
+.login-btn:hover{
+background:#111;
+color:#00d4ff;
+}
+
+
+
+/* post job button */
+
+.post-btn{
+background:#00d4ff;
+color:white;
+padding:10px 22px;
+border-radius:6px;
+text-decoration:none;
+font-weight:500;
+transition:0.3s;
+}
+
+.post-btn:hover{
+background:#0099cc;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:900px){
+
+.main-menu{
+display:none;
+}
+
+.header-buttons{
+gap:10px;
+}
+
+.post-btn{
+padding:8px 15px;
+}
+
+}
+.signup-btn{
+    height: 48px;
+    width: 75px;
+
+}
+.Resume-btn{
+    height: 48px;
+    width: 75px;
+    font-size: 12px;
+
+}
+.Resume-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#ff5a3c;
+  color:white;
+  font-size:16px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.Resume-btn:hover{
+  background:#e14c30;
+}
+.Resume-btn{
+    height: 48px;
+    width: 100%;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}

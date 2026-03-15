@@ -1,0 +1,114 @@
+/* Page Background */
+.interview-wrapper {
+  min-height: 100vh;
+  padding: 30px;
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+
+/* Card */
+.glass-card {
+  background-color: #f8fbff;
+  padding: 25px;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+  margin-bottom: 25px;
+}
+
+/* Heading */
+.glass-card h2 {
+  color: #2563eb;
+  margin-bottom: 15px;
+}
+
+/* Form */
+.modern-form {
+  display: grid;
+  gap: 12px;
+}
+
+/* Inputs */
+.modern-form input,
+.modern-form select {
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.modern-form input:focus,
+.modern-form select:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+/* Button */
+.neon-btn {
+  background-color: #477bec;
+  color: white;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.neon-btn:hover {
+  background-color: #2665ed;
+}
+
+/* Table */
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.modern-table th {
+  background-color: #2563eb;
+  color: white;
+  padding: 8px;
+  text-align: center;
+}
+
+.modern-table td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.modern-table tr:nth-child(even) {
+  background-color: #f1f5f9;
+}
+
+.status {
+  color: #2563eb;
+  font-weight: bold;
+}
+
+/* Delete Button */
+.delete-modern {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-modern:hover {
+  background-color: #b91c1c;
+}
+
+.empty {
+  padding: 15px;
+  color: #6b7280;
+}
+.glass-card h2 {
+  text-align: center; /* centers the text inside the card */
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 20px;
+}
+
+

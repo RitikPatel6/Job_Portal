@@ -1,0 +1,49 @@
+.resume-container{
+display:flex;
+justify-content:center;
+align-items:center;
+padding:40px;
+background:#f5f7fb;
+min-height:100vh;
+}
+
+.resume{
+width:750px;
+background:white;
+padding:40px;
+border-radius:10px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+font-family:Poppins;
+}
+
+.resume h1{
+font-size:32px;
+border-bottom:2px solid #ff5a3c;
+padding-bottom:10px;
+margin-bottom:20px;
+}
+
+.resume h2{
+margin-top:25px;
+color:#333;
+}
+
+.resume p{
+font-size:15px;
+margin:5px 0;
+}
+
+.download-btn{
+margin-top:30px;
+padding:12px 20px;
+background:#ff5a3c;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+}
+
+.download-btn:hover{
+background:#e14c30;
+}

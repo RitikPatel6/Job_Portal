@@ -1,0 +1,163 @@
+/* ===== GENERAL ===== */
+
+body{
+font-family:'Poppins',sans-serif;
+background:#f4f6f9;
+margin:0;
+color:#1e293b;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:0 20px;
+}
+
+/* ===== BANNER ===== */
+
+.about-banner{
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:white;
+text-align:center;
+padding:80px 20px;
+}
+
+.about-banner h1{
+font-size:42px;
+color:#f97316;
+margin-bottom:10px;
+}
+
+.about-banner p{
+font-size:18px;
+color:#cbd5f5;
+}
+
+/* ===== CONTAINER ===== */
+
+.about-container{
+margin-top:60px;
+}
+
+/* ===== INTRO ===== */
+
+.about-intro{
+background:white;
+padding:40px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+margin-bottom:40px;
+}
+
+.about-intro h2{
+margin-bottom:15px;
+font-size:28px;
+}
+
+.about-intro p{
+color:#64748b;
+line-height:1.6;
+margin-bottom:10px;
+}
+
+/* ===== FEATURES ===== */
+
+.about-features{
+margin-bottom:50px;
+}
+
+.about-features h2{
+margin-bottom:25px;
+font-size:28px;
+}
+
+.feature-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.feature-card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+transition:0.3s;
+}
+
+.feature-card:hover{
+transform:translateY(-5px);
+}
+
+.feature-card h3{
+margin-bottom:10px;
+color:#f97316;
+}
+
+.feature-card p{
+color:#64748b;
+font-size:14px;
+}
+
+/* ===== TEAM ===== */
+
+.about-team h2{
+margin-bottom:25px;
+font-size:28px;
+}
+
+.team-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:25px;
+}
+
+.team-card{
+background:white;
+padding:25px;
+text-align:center;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+.team-card img{
+width:80px;
+height:80px;
+border-radius:50%;
+margin-bottom:10px;
+}
+
+.team-card h4{
+margin:5px 0;
+}
+
+.team-card p{
+color:#64748b;
+font-size:14px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:900px){
+
+.feature-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.team-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:600px){
+
+.feature-grid{
+grid-template-columns:1fr;
+}
+
+.team-grid{
+grid-template-columns:1fr;
+}
+
+}

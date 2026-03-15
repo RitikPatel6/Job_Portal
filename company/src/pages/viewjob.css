@@ -1,0 +1,122 @@
+/* ===============================
+   JOB LIST PAGE - SIMPLE VERSION
+================================ */
+
+.job-container {
+  padding: 40px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.job-card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.job-header {
+  background-color: #1e3a8a; /* Dark Blue */
+  color: white;
+  padding: 16px 20px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.job-table-wrapper {
+  overflow-x: auto;
+}
+
+.job-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.job-table th {
+  background-color: #2563eb;
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+}
+
+.job-table td {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.job-table tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Action Column */
+.action-column {
+  min-width: 200px;
+}
+
+/* Status Badges */
+.status-active {
+  background-color: #198754;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.status-inactive {
+  background-color: #6c757d;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+
+/* No Data Row */
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+  font-style: italic;
+}
+.btn-success{
+  padding: 6px 12px;
+  background-color: #2f66d0;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.btn-success:hover {
+  background-color: #1d4ed8;
+}
+
+.delete-btn {
+  padding: 6px 12px;
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+  background-color: #dc2626;
+}
+.btn-success{
+  width: 60px;
+}

@@ -1,0 +1,123 @@
+/* ==============================
+   SIDEBAR CONTAINER
+============================== */
+.sidebar {
+  width: 270px;
+  min-height: 100vh;   /* important */
+  background-color: #0f172a; 
+  color: white;
+  padding: 30px 20px;
+}
+
+/* ==============================
+   PROFILE SECTION
+============================== */
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.profile-img {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+}
+
+.profile-section h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.profile-section p {
+  margin: 3px 0 0 0;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+/* ==============================
+   MENU TITLE
+============================== */
+.menu-title {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+/* ==============================
+   MENU
+============================== */
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  margin-bottom: 18px;
+}
+
+/* ==============================
+   MAIN LINKS
+============================== */
+.menu li a,
+.dropdown-title {
+  text-decoration: none;
+  color: #e2e8f0;
+  font-size: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+/* Hover Effect */
+.menu li a:hover,
+.dropdown-title:hover {
+  background-color: #334155;
+  
+  color: white;
+}
+
+/* ==============================
+   SUBMENU
+============================== */
+.submenu {
+  display: none;
+  padding-left: 15px;
+  margin-top: 8px;
+}
+
+.submenu.show {
+  display: block;
+}
+
+.dropdown-title {
+  cursor: pointer;
+  padding: 10px 0;
+  color: #e2e8f0;
+  transition: 0.3s;
+}
+
+.dropdown-title:hover {
+  color: white;
+}
+
+.manage {
+  cursor: pointer;
+  padding: 10px 0;
+  padding-left: 11px;
+  color: #e2e8f0;
+  transition: 0.3s;
+}
+
+.managejob {
+  cursor: pointer;
+  padding: 10px 0;
+  padding-left: 11px;
+  color: #e2e8f0;
+  transition: 0.3s;
+}

@@ -1,0 +1,164 @@
+/* ===== GLOBAL ===== */
+
+body{
+  margin:0;
+  font-family:'Poppins', sans-serif;
+  background:#f5f7fb;
+}
+
+/* ===== PAGE ===== */
+
+.signup-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+/* ===== CONTAINER ===== */
+
+.signup-container{
+  display:flex;
+  width:900px;
+  background:#ffffff;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* ===== LEFT SIDE ===== */
+
+.signup-left{
+  flex:1;
+  background:#ff5a3c;
+  color:#ffffff;
+  padding:60px 40px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.signup-left h1{
+  font-size:38px;
+  margin-bottom:10px;
+}
+
+.signup-left p{
+  font-size:16px;
+  line-height:1.6;
+}
+
+/* ===== RIGHT SIDE ===== */
+
+.signup-right{
+  flex:1;
+  padding:45px 40px;
+}
+
+.signup-right h2{
+  margin-bottom:25px;
+  color:#333;
+}
+
+/* ===== LABEL ===== */
+
+.signup-right label{
+  font-size:14px;
+  font-weight:500;
+  display:block;
+  margin-bottom:5px;
+  color:#444;
+}
+
+/* ===== INPUT ===== */
+
+.signup-right input,
+.signup-right textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:15px;
+  border:1px solid #ddd;
+  border-radius:6px;
+  font-size:14px;
+  outline:none;
+  transition:0.3s;
+}
+
+/* INPUT FOCUS */
+
+.signup-right input:focus,
+.signup-right textarea:focus{
+  border-color:#ff5a3c;
+  box-shadow:0 0 4px rgba(255,90,60,0.3);
+}
+
+/* FILE INPUT */
+
+.signup-right input[type="file"]{
+  padding:8px;
+  background:#fafafa;
+}
+
+/* TEXTAREA */
+
+.signup-right textarea{
+  resize:none;
+  height:70px;
+}
+
+/* ===== BUTTON ===== */
+
+.signup-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#ff5a3c;
+  color:white;
+  font-size:16px;
+  border-radius:6px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.signup-btn:hover{
+  background:#e14c30;
+}
+
+/* ===== LOGIN LINK ===== */
+
+.signup-right p{
+  margin-top:15px;
+  font-size:14px;
+  text-align:center;
+}
+
+.signup-right a{
+  color:#ff5a3c;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.signup-right a:hover{
+  text-decoration:underline;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media(max-width:768px){
+
+  .signup-container{
+    flex-direction:column;
+    width:100%;
+  }
+
+  .signup-left{
+    text-align:center;
+    padding:40px 20px;
+  }
+
+  .signup-right{
+    padding:35px 25px;
+  }
+
+}

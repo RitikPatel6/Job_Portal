@@ -1,0 +1,332 @@
+body{
+font-family:Poppins;
+background:#f5f7fb;
+margin:0;
+}
+
+/* container */
+
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+/* HERO */
+
+.hero-section{
+padding:80px 0;
+}
+
+.hero-container{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:40px;
+}
+
+.hero-text h1{
+font-size:42px;
+margin:10px 0;
+}
+
+.hero-buttons{
+margin-top:20px;
+}
+
+.btn-primary{
+background:#ff5a3c;
+color:white;
+padding:12px 25px;
+border:none;
+border-radius:6px;
+margin-right:10px;
+cursor:pointer;
+}
+
+.btn-secondary{
+background:#0f172a;
+color:white;
+padding:12px 25px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.hero-image img{
+width:450px;
+}
+
+/* SEARCH */
+
+.job-search-section{
+background:#fff;
+padding:30px;
+box-shadow:0 5px 20px rgba(0,0,0,0.05);
+}
+
+.job-search-container{
+display:flex;
+gap:15px;
+}
+
+.job-search-container input,
+.job-search-container select{
+padding:12px;
+flex:1;
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+.btn-search{
+background:#ff5a3c;
+color:white;
+padding:12px 25px;
+border:none;
+border-radius:6px;
+}
+
+/* CATEGORIES */
+
+.categories-section{
+padding:60px 0;
+}
+
+.section-title{
+text-align:center;
+margin-bottom:40px;
+}
+
+.categories-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.category-card{
+background:white;
+padding:25px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* JOB CARD */
+
+.featured-jobs-section{
+padding:60px 0;
+}
+
+.job-card{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:white;
+padding:20px;
+margin-bottom:15px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.job-left{
+display:flex;
+gap:15px;
+align-items:center;
+}
+
+.btn-apply{
+background:#ff5a3c;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:6px;
+}
+
+/* CANDIDATES */
+
+.candidate-section{
+padding:60px 0;
+}
+
+.candidate-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+}
+
+.candidate-card{
+background:white;
+padding:20px;
+text-align:center;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.candidate-card img{
+width:80px;
+border-radius:50%;
+}
+
+/* CTA */
+
+.cta-section{
+/* background:#0f172a; */
+padding:70px 0;
+text-align:center;
+color:white;
+}
+
+.cta-box button{
+margin-top:15px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+
+.hero-container{
+flex-direction:column;
+}
+
+.categories-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.candidate-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.job-search-container{
+flex-direction:column;
+}
+
+}
+/* TOP COMPANIES */
+
+.companies-section{
+  padding:80px 0;
+  background:#f7f9fc;
+}
+
+.companies-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:40px;
+}
+
+.Section-title{
+  font-size:30px;
+  /* font-weight:600; */
+  margin-left: 470px;
+}
+
+.browse-btn{
+  border:1px solid #00d363;
+  color:#00d363;
+  padding:10px 20px;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.browse-btn:hover{
+  background:#00d363;
+  color:white;
+}
+
+.companies-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:25px;
+}
+
+.company-card{
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  text-align:center;
+  box-shadow:0 4px 15px rgba(0,0,0,0.05);
+  transition:0.3s;
+}
+
+.company-card:hover{
+  transform:translateY(-5px);
+}
+
+.company-card img{
+  width:60px;
+  margin-bottom:15px;
+}
+
+.company-card h4{
+  font-size:18px;
+  margin-bottom:10px;
+}
+
+.company-card span{
+  background:#e7f3ff;
+  padding:4px 10px;
+  border-radius:5px;
+  color:#007bff;
+  margin-right:6px;
+}
+/* TESTIMONIAL SECTION */
+
+.testimonial_area{
+  padding:80px 0;
+  background:#f7f9fc;
+}
+
+.section_title{
+  text-align:center;
+  margin-bottom:40px;
+  color:#191D34;
+}
+
+.section_title h3{
+  font-size:32px;
+  font-weight:450;
+}
+
+.testimonial_grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:30px;
+}
+
+.single_testimonial{
+  background:white;
+  padding:30px;
+  border-radius:10px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.05);
+  transition:0.3s;
+}
+
+.single_testimonial:hover{
+  transform:translateY(-5px);
+}
+
+.testimonial_content{
+  display:flex;
+  align-items:flex-start;
+  gap:20px;
+}
+
+.thumb img{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+}
+
+.info p{
+  font-size:14px;
+  color:#555;
+  line-height:1.6;
+  margin-bottom:10px;
+}
+
+.info span{
+  font-weight:600;
+  color:#333;
+}

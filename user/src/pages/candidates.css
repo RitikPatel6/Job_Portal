@@ -1,0 +1,116 @@
+/* ===== GENERAL ===== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f6f9;
+  margin: 0;
+  color: #1e293b;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+/* ===== BANNER ===== */
+.candidates-banner {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.candidates-banner h1 {
+  font-size: 42px;
+  font-weight: 700;
+  color: #f97316;
+}
+
+/* ===== CANDIDATES GRID ===== */
+.candidates-container {
+  padding: 40px 0;
+  
+}
+
+.candidates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+.candidate-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  text-align: center;
+  padding: 25px 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.candidate-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.candidate-thumb img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.candidate-card h4 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+}
+
+.candidate-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* ===== PAGINATION ===== */
+.pagination {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.pagination ul {
+  list-style: none;
+  padding: 0;
+  display: inline-flex;
+  gap: 10px;
+}
+
+.pagination li a {
+  display: block;
+  padding: 8px 14px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  color: #1e293b;
+  font-weight: 500;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.pagination li a:hover {
+  background: #f97316;
+  color: white;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .candidate-card {
+    padding: 20px 10px;
+  }
+
+  .candidates-banner h1 {
+    font-size: 32px;
+  }
+}
+
+.candidates-container.container{
+    margin-top: 100px;
+}

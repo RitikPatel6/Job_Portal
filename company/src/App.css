@@ -1,0 +1,34 @@
+/* Remove default spacing */
+body {
+  margin: 0;
+}
+
+/* Wrapper for sidebar + content */
+.dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar fixed height */
+.sidebar {
+  width: 260px;
+  /* background-color: #1e293b; */
+  min-height: 100vh;
+}
+
+/* Page content */
+.page-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #f1f5f9;
+}
+
+/* Footer clean */
+.main-footer {
+  width: 100%;
+  /* background-color: #1f2d3d; */
+  color: #cfd8dc;
+  text-align: center;
+  padding: 15px 0;
+  margin: 0;
+}

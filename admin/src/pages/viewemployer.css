@@ -1,0 +1,130 @@
+/* Main Content Area */
+.page-content {
+  padding: 30px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Card Block */
+.block {
+  background: #ffffff;
+  padding: 25px;
+  width: 140%;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(192, 9, 9, 0.08);
+}
+
+/* Title */
+.block .title strong {
+  font-size: 20px;
+  color:#007bff;
+}
+
+/* Table */
+.employer-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+/* Table Head */
+.employer-table thead {
+  background-color:#1e293b;
+  color: #ffffff;
+}
+
+.employer-table th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Table Body */
+.employer-table td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Hover Effect */
+.employer-table tbody tr:hover {
+  background-color: #f1f5f9;
+  transition: 0.2s ease-in-out;
+}
+
+/* ID Image */
+.employer-table img {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Breadcrumb Fix */
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 15px;
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.breadcrumb-item.active{
+  color: #007bff;
+  background-color: #f1f5f9;
+}
+.page-header.no-margin-bottom{
+  width: 136%;
+  border-radius: 3px;
+  background-color:  #2f66d0;
+  color: white;
+}
+
+.block.margin-bottom-sm{
+  background-color: white;
+}
+table thead tr {
+  background-color: white;
+}
+
+table thead th {
+  background-color: white;
+  color: black; /* optional */
+}
+
+.btn-edit {
+  padding: 6px 14px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  padding: 6px 14px;
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}

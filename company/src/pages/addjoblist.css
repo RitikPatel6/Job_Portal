@@ -1,0 +1,97 @@
+/* ===============================
+   ADD JOB PAGE - BUTTON HOVER FIX
+================================ */
+
+.addjob-page {
+  padding: 40px;
+  background-color: #ffffff;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Card */
+.addjob-page .form-card {
+  background: #f8fbff;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+  padding: 30px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Header */
+.addjob-page .form-header {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #1e3a8a;
+}
+
+/* Grid Layout */
+.addjob-page .form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* Full Width Fields */
+.addjob-page .full-width {
+  grid-column: span 2;
+}
+
+/* Form Fields */
+.addjob-page .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.addjob-page .form-group input,
+.addjob-page .form-group select,
+.addjob-page .form-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
+}
+
+.addjob-page .form-group input:focus,
+.addjob-page .form-group select:focus,
+.addjob-page .form-group textarea:focus {
+  border-color: #2563eb;
+}
+
+/* Button Section */
+.addjob-page .form-actions {
+  margin-top: 25px;
+  text-align: right;
+}
+
+/* Submit Button - Hover applies ONLY here */
+.addjob-page .submit-btn {
+  padding: 8px 20px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.addjob-page .submit-btn:hover {
+  background-color: #1e40af; /* hover affects only the button */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .addjob-page .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .addjob-page .full-width {
+    grid-column: span 1;
+  }
+}

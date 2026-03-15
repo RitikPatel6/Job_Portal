@@ -1,0 +1,23 @@
+
+/* ===============================
+   FOOTER
+================================ */
+
+.main-footer {
+  width: 100%;
+  background-color: #0f172a; 
+  padding: 15px 0;
+  margin-top: auto;
+}
+
+.footer-container {
+  text-align: center;
+  color: #cfd8dc;
+  font-size: 14px;
+}
+
+.main-footer p {
+  margin: 0;
+}
+
+
