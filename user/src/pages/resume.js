@@ -3,11 +3,9 @@ import Axios from "axios";
 import "./resume.css";
 
 function Resume() {
-
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-
     const id = localStorage.getItem("userid");
 
     if (!id) {
@@ -18,63 +16,88 @@ function Resume() {
 
     Axios.get("http://localhost:1337/api/getuser/" + id)
       .then((res) => {
-
         if (res.data.success) {
           setUser(res.data.data);
         } else {
           alert("User not found");
         }
-
       })
       .catch((err) => {
         console.log(err);
       });
-
   }, []);
 
+  // <-- Guard to avoid reading properties on null
   if (!user) {
-    return <h2 style={{textAlign:"center"}}>Loading Resume...</h2>;
+    return <h2 style={{ textAlign: "center" }}>Loading Resume...</h2>;
   }
 
   return (
-
     <div className="resume-container">
-
       <div className="resume">
 
-        <h1>{user.Name}</h1>
+        {/* LEFT SIDEBAR */}
+        <div className="resume-left">
+          {user.Upload_photo ? (
+            <img
+              src={`http://localhost:1337/uploads/${user.Upload_photo}`}
+              alt="User"
+            />
+          ) : (
+            <p>No photo uploaded</p>
+          )}
+          <h2 class="name1">{user.Name}</h2>
+          <p class="name">{user.email}</p>
+          <p class="name">{user.Contact_no}</p>
+          <p class="name">{user.Address}</p>
+        </div>
 
-         <p><b>Name:</b> {user.Name}</p>
+        {/* RIGHT MAIN SECTION */}
+        <div className="resume-right">
+          <h1>{user.Name}'s Resume</h1>
 
-        <p><b>Email:</b> {user.email}</p>
-        <p><b>Contact:</b> {user.Contact_no}</p>
-        <p><b>Address:</b> {user.Address}</p>
+          <div className="section">
+            <h3>Education</h3>
+            <p>{user.Education}</p>
+          </div>
 
-        <h2>Education</h2>
-        <p>{user.Education}</p>
+          <div className="section">
+            <h3>Skills</h3>
+            <p>{user.Skills}</p>
+          </div>
 
-        <h2>Experience</h2>
-        <p>{user.Experience}</p>
+          <div className="section">
+            <h3>Experience</h3>
+            <p>{user.Experience}</p>
+          </div>
 
-        <h2>Projects</h2>
-        <p>{user.Projects}</p>
-         <h2>Upload Photo</h2>
-        <p>{user.Upload_photo}</p>
+          <div className="section">
+            <h3>Company_name</h3>
+            <p>{user.Company_name}</p>
+          </div>
+          <div className="section">
+            <h3>Post</h3>
+            <p>{user.Post}</p>
+          </div>
+          <div className="section">
+            <h3>Duration</h3>
+            <p>{user.Duration}</p>
+          </div>
+          <div className="section">
+            <h3>Work_description</h3>
+            <p>{user.Work_description}</p>
+          </div>
 
-
-        <button
-          className="download-btn"
-          onClick={() => window.print()}
-        >
-          Download Resume
-        </button>
-
+          <button
+            className="download-btn"
+            onClick={() => window.print()}
+          >
+            Download Resume
+          </button>
+        </div>
       </div>
-
     </div>
-
   );
-
 }
 
 export default Resume;

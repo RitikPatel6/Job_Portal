@@ -1,0 +1,98 @@
+.details-page {
+  background: #f4f6f9;
+  min-height: 100vh;
+  padding: 50px 20px;
+}
+
+.details-container {
+  max-width: 600px;
+  margin: auto;
+}
+
+.back-btn {
+  margin-bottom: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #f97316;
+  font-size: 16px;
+}
+
+/* CARD */
+.profile-card {
+  background: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  transition: 0.3s;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+}
+
+/* IMAGE */
+.profile-card img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f97316;
+  margin-bottom: 15px;
+}
+
+/* TEXT */
+.profile-card h2 {
+  margin: 10px 0;
+}
+
+.job {
+  color: #64748b;
+  margin-bottom: 15px;
+}
+
+/* INFO */
+.info {
+  text-align: left;
+  margin-top: 15px;
+}
+
+.info p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+/* BUTTONS */
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.hire-btn {
+  background: #f97316;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.message-btn {
+  background: #0f172a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.hire-btn:hover {
+  background: #ea580c;
+}
+
+.message-btn:hover {
+  background: #1e293b;
+}

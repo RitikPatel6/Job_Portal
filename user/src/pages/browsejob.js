@@ -1,41 +1,87 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./browsejob.css";
+import Axios from "axios";
 
 function Browsejob() {
 
-  const jobs = [
-    {
-      id: 1,
-      title: "Software Engineer",
-      company: "Tech Corp",
-      location: "California",
-      type: "Part-time",
-      logo: "/img/svg_icon/1.svg"
-    },
-    {
-      id: 2,
-      title: "Digital Marketer",
-      company: "Marketing Ltd",
-      location: "New York",
-      type: "Full-time",
-      logo: "/img/svg_icon/2.svg"
-    },
-    {
-      id: 3,
-      title: "Wordpress Developer",
-      company: "Web Studio",
-      location: "Texas",
-      type: "Part-time",
-      logo: "/img/svg_icon/3.svg"
-    },
-    {
-      id: 4,
-      title: "Visual Designer",
-      company: "Creative Agency",
-      location: "Los Angeles",
-      type: "Full-time",
-      logo: "/img/svg_icon/4.svg"
+  const [jobs, setJobs] = useState([]);
+  const [appliedJobs, setAppliedJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const user_id = 1;
+
+  useEffect(() => {
+    fetchJobs();
+    fetchAppliedJobs();
+  }, []);
+
+  // ================= FETCH JOBS =================
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+      const res = await Axios.get("http://localhost:1337/api/joblist");
+      setJobs(res.data || []);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  // ================= FETCH APPLIED =================
+  const fetchAppliedJobs = async () => {
+    try {
+      const res = await Axios.get(
+        `http://localhost:1337/api/applied/${user_id}`
+      );
+
+      const ids = res.data.map(
+        (job) => job.Job_id || job.job_id
+      );
+
+      setAppliedJobs(ids);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // ================= APPLY =================
+  const applyJob = async (job) => {
+    try {
+      const res = await Axios.post(
+        "http://localhost:1337/api/apply",
+        {
+          job_id: job.Job_id,
+          user_id: user_id,
+          company_id: job.Company_id || 1
+        }
+      );
+
+      if (res.data.success) {
+        alert("Applied Successfully ✅");
+        setAppliedJobs((prev) => [...prev, job.Job_id]);
+      } else {
+        alert("Already Applied ❌");
+      }
+
+    } catch (err) {
+      console.log(err);
+      alert("Error ❌");
+    }
+  };
+
+  // ================= FILTER =================
+  const filteredJobs = jobs.filter((job) =>
+    job.Job_title?.toLowerCase().includes(search.toLowerCase()) ||
+    job.skill?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const images = [
+    "/img/svg_icon/1.svg",
+    "/img/svg_icon/2.svg",
+    "/img/svg_icon/3.svg",
+    "/img/svg_icon/4.svg"
   ];
 
   return (
@@ -43,66 +89,100 @@ function Browsejob() {
 
       {/* Banner */}
       <section className="browsejob-banner">
-        <h1>4536+ Jobs Available</h1>
+        <h1>{filteredJobs.length}+ Jobs Available</h1>
       </section>
 
       <div className="container browsejob-container">
 
-        {/* Sidebar Filter */}
+        {/* Sidebar */}
         <aside className="filter-sidebar">
           <h3>Filter Jobs</h3>
 
-          <input type="text" placeholder="Search keyword" />
-
-          <select>
-            <option>Location</option>
-            <option>India</option>
-            <option>USA</option>
-          </select>
-
-          <select>
-            <option>Category</option>
-            <option>IT</option>
-            <option>Marketing</option>
-          </select>
-
-          <select>
-            <option>Experience</option>
-            <option>Fresher</option>
-            <option>1-3 Years</option>
-          </select>
-
-          <select>
-            <option>Job Type</option>
-            <option>Full-time</option>
-            <option>Part-time</option>
-          </select>
-
-          <button className="btn-reset">Reset</button>
+          <input
+            type="text"
+            placeholder="Search job or skill"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </aside>
 
-        {/* Job Listing */}
+        {/* Jobs */}
         <section className="job-listing">
-          <div className="job-listing-header">
-            <h2>Job Listings</h2>
-            <select>
-              <option>Most Recent</option>
-            </select>
-          </div>
+          <h2>Job Listings</h2>
 
           <div className="job-cards">
-            {jobs.map((job) => (
-              <div className="job-card" key={job.id}>
-                <div className="job-card-left">
-                  <img src={job.logo} alt={job.company} />
-                  <div className="job-info">
-                    <h4>{job.title}</h4>
-                    <p>{job.company} • {job.location} • {job.type}</p>
+
+            {loading ? (
+              <p>Loading jobs...</p>
+            ) : filteredJobs.length > 0 ? (
+
+              filteredJobs.map((job, index) => {
+
+                const isApplied = appliedJobs.includes(job.Job_id);
+
+                return (
+                  <div className="job-card" key={job.Job_id}>
+
+                    {/* LEFT */}
+                    <div className="job-card-left">
+
+                      <img
+                        src={images[index % images.length]}
+                        alt="logo"
+                        className="job-img"
+                      />
+
+                      <div className="job-info">
+
+                        <h4>{job.Job_title}</h4>
+
+                        <p>
+                          {job.location} • {job.jobtype} • ₹{job.salary}
+                        </p>
+
+                        <p>
+                          <strong>Skills:</strong> {job.skill || "N/A"}
+                        </p>
+
+                        {job.Jobcat_description && (
+                          <p className="job-category">
+                            {job.Jobcat_description}
+                          </p>
+                        )}
+
+                        {job.description && (
+                          <p className="job-desc">
+                            <strong>Description:</strong> {job.description}
+                          </p>
+                        )}
+
+                      </div>
+                    </div>
+
+                    {/* RIGHT */}
+                    <div className="job-card-right">
+                      {isApplied ? (
+                        <button className="btn-applied">
+                          Applied ✅
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-apply"
+                          onClick={() => applyJob(job)}
+                        >
+                          Apply Now
+                        </button>
+                      )}
+                    </div>
+
                   </div>
-                </div>
-                <button className="btn-apply">Apply Now</button>
-              </div>
-            ))}
+                );
+              })
+
+            ) : (
+              <p>No Jobs Found</p>
+            )}
+
           </div>
         </section>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./signup.css";
 import Swal from "sweetalert2";
@@ -6,8 +6,9 @@ import Axios from "axios";
 
 function Signup() {
 
-  function Userregister(e) {
+  const [experience, setExperience] = useState("0");
 
+  function Userregister(e) {
     e.preventDefault();
 
     const Name = document.getElementById("Name").value;
@@ -16,19 +17,21 @@ function Signup() {
     const password = document.getElementById("password").value;
     const Address = document.getElementById("Address").value;
     const Education = document.getElementById("Education").value;
+    const Skills = document.getElementById("Skills").value;
     const Experience = document.getElementById("Experience").value;
-    const Projects = document.getElementById("Projects").value;
-
     const Upload_photo = document.getElementById("Upload_photo").files[0];
 
-    if (!Name || !Contact_no || !email || !password) {
+    const Company_name = document.getElementById("Company_name")?.value;
+    const Post = document.getElementById("Post")?.value;
+    const Duration = document.getElementById("Duration")?.value;
+    const Work_description = document.getElementById("Work_description")?.value;
 
+    if (!Name || !Contact_no || !email || !password) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "Please fill required fields!"
       });
-
       return;
     }
 
@@ -40,53 +43,45 @@ function Signup() {
     formData.append("password", password);
     formData.append("Address", Address);
     formData.append("Education", Education);
+    formData.append("Skills", Skills);
     formData.append("Experience", Experience);
-    formData.append("Projects", Projects);
     formData.append("Upload_photo", Upload_photo);
 
+    if (experience !== "0") {
+      formData.append("Company_name", Company_name);
+      formData.append("Post", Post);
+      formData.append("Duration", Duration);
+      formData.append("Work_description", Work_description);
+    }
+
     Axios.post("http://localhost:1337/api/usersignup", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
+      headers: { "Content-Type": "multipart/form-data" }
     })
-
-    .then((response) => {
-
-      if (response.data.success) {
-
-        Swal.fire({
-          icon: "success",
-          title: "User Registered Successfully!"
-        }).then(() => {
-          window.location.href = "/login";
-        });
-
-      } else {
-
+      .then((response) => {
+        if (response.data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "User Registered Successfully!"
+          }).then(() => {
+            window.location.href = "/login";
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: response.data.message
+          });
+        }
+      })
+      .catch(() => {
         Swal.fire({
           icon: "error",
-          title: response.data.message
+          title: "Server Error"
         });
-
-      }
-
-    })
-
-    .catch(() => {
-
-      Swal.fire({
-        icon: "error",
-        title: "Server Error"
       });
-
-    });
-
   }
 
   return (
-
     <div className="signup-page">
-
       <div className="signup-container">
 
         {/* LEFT */}
@@ -97,35 +92,67 @@ function Signup() {
 
         {/* RIGHT */}
         <div className="signup-right">
-
           <h2>Candidate Registration</h2>
 
           <form onSubmit={Userregister}>
 
             <label>Name</label>
-            <input type="text" id="Name" placeholder="Enter Name" required />
+            <input type="text" id="Name" required />
 
             <label>Contact Number</label>
-            <input type="number" id="Contact_no" placeholder="Contact Number" required />
+            <input type="number" id="Contact_no" required />
 
             <label>Email</label>
-            <input type="email" id="email" placeholder="Enter Email" required />
+            <input type="email" id="email" required />
 
             <label>Password</label>
-            <input type="password" id="password" placeholder="Enter Password" required />
+            <input type="password" id="password" required />
 
             <label>Address</label>
-            <textarea id="Address" placeholder="Enter Address"></textarea>
+            <textarea id="Address"></textarea>
 
             <label>Education</label>
-            <textarea id="Education" placeholder="Enter Education"></textarea>
+            <textarea id="Education"></textarea>
 
-            <label>Experience</label>
-            <textarea id="Experience" placeholder="Enter Experience"></textarea>
+            <label>Skills</label>
+            <textarea id="Skills"></textarea>
 
-            <label>Projects</label>
-            <textarea id="Projects" placeholder="Enter Projects"></textarea>
+            <label>Experience Details</label>
+            <textarea id="Experience"></textarea>
 
+            
+
+            {/* Experience Dropdown */}
+            <label>Experience (Years)</label>
+            <select class="form-control"
+              value={experience}
+              onChange={(e) => setExperience(e.target.value)}
+            >
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5+</option>
+            </select>
+            <br></br>
+
+            {/* CONDITIONAL FIELDS */}
+            {experience !== "0" && (
+              <>
+                <label>Company Name</label>
+                <input type="text" id="Company_name" />
+
+                <label>Post</label>
+                <input type="text" id="Post" />
+
+                <label>Duration</label>
+                <input type="text" id="Duration" />
+
+                <label>Work Description</label>
+                <textarea id="Work_description"></textarea>
+              </>
+            )}
             <label>Upload Photo</label>
             <input type="file" id="Upload_photo" />
 
@@ -138,15 +165,10 @@ function Signup() {
             </p>
 
           </form>
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }
 
 export default Signup;

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./aboutas.css";
 
 function Aboutas() {
@@ -37,13 +38,13 @@ function Aboutas() {
       id:2,
       name:"John Smith",
       role:"UI Designer",
-      img:"img/candiateds/2.png"
+      img:"/img/candiateds/2.png"
     },
     {
       id:3,
       name:"Sara Johnson",
       role:"Marketing Head",
-      img:"img/candiateds/3.png"
+      img:"/img/candiateds/3.png"
     }
   ];
 
@@ -74,6 +75,50 @@ function Aboutas() {
           </p>
         </section>
 
+        {/* Mission & Vision */}
+        <section className="about-mission">
+          <div className="mission-box">
+            <h3>🎯 Our Mission</h3>
+            <p>
+              To empower job seekers by providing access to the best career
+              opportunities and helping companies hire the right talent quickly.
+            </p>
+          </div>
+
+          <div className="vision-box">
+            <h3>🚀 Our Vision</h3>
+            <p>
+              To become the leading job portal platform that bridges the gap
+              between talent and opportunity across the globe.
+            </p>
+          </div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="about-stats">
+          <div className="stats-grid">
+            <div className="stat-card">
+              <h2>5000+</h2>
+              <p>Jobs Available</p>
+            </div>
+
+            <div className="stat-card">
+              <h2>2000+</h2>
+              <p>Companies</p>
+            </div>
+
+            <div className="stat-card">
+              <h2>10,000+</h2>
+              <p>Job Seekers</p>
+            </div>
+
+            <div className="stat-card">
+              <h2>95%</h2>
+              <p>Success Rate</p>
+            </div>
+          </div>
+        </section>
+
         {/* Features */}
         <section className="about-features">
           <h2>Our Features</h2>
@@ -86,6 +131,19 @@ function Aboutas() {
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Why Choose Us */}
+        <section className="about-why">
+          <h2>Why Choose Us</h2>
+
+          <ul className="why-list">
+            <li>✔ Easy and fast job search</li>
+            <li>✔ Trusted by top companies</li>
+            <li>✔ Secure and reliable platform</li>
+            <li>✔ Free resume upload</li>
+            <li>✔ 24/7 support</li>
+          </ul>
         </section>
 
         {/* Team */}
@@ -103,7 +161,22 @@ function Aboutas() {
           </div>
         </section>
 
+        {/* CTA */}
+        <section className="about-cta">
+          <h2>Start Your Career Journey Today 🚀</h2>
+          <p>Join thousands of job seekers and find your dream job now.</p>
+            <Link to="/browsejob">
+             <button className="btn-secondary">Browse Jobs</button>
+             </Link>
+        </section>
+
       </div>
+
+      {/* Footer Note */}
+      <footer className="about-footer">
+        <p>© 2026 Job Portal. All rights reserved.</p>
+      </footer>
+
     </div>
   );
 }

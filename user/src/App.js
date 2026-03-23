@@ -13,6 +13,8 @@ import Contact from "./pages/conact";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Resume from "./pages/resume";
+import Uploadresume from "./pages/uploadresume";
+import Candidatedetails from "./pages/candidatedetails";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
          <Route path="/resume" element={<Resume />} />
+         <Route path="/uploadresume" element={<Uploadresume />} />
+          <Route path="/candidate/:id" element={<Candidatedetails />} />
 
         {/* All Pages With Header + Footer */}
         <Route
@@ -41,6 +45,7 @@ function App() {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/singleblog" element={<Singleblog />} />
                 <Route path="/contact" element={<Contact />} />
+
 
               </Routes>
 

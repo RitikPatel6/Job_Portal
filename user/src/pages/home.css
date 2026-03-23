@@ -34,7 +34,7 @@ margin:10px 0;
 margin-top:20px;
 }
 
-.btn-primary{
+.Btn-Primary{
 background:#ff5a3c;
 color:white;
 padding:12px 25px;
@@ -42,6 +42,9 @@ border:none;
 border-radius:6px;
 margin-right:10px;
 cursor:pointer;
+}
+.Btn-Primary:hover{
+  background-color: #2563eb!important;
 }
 
 .btn-secondary{
@@ -329,4 +332,102 @@ flex-direction:column;
 .info span{
   font-weight:600;
   color:#333;
+}
+.Btn-Primary{
+  height: 50px;
+}
+.btn-search {
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
+}
+.container {
+  pointer-events: auto;
+}
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.overlay {
+  pointer-events: none;
+}
+.candidate-section {
+  padding: 60px 0;
+  background: #f8fafc;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* GRID */
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.candidate-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.candidate-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* IMAGE */
+.candidate-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+/* TEXT */
+.candidate-card h4 {
+  margin: 5px 0;
+}
+
+.candidate-card p {
+  font-size: 14px;
+  color: #666;
+}
+
+/* BUTTON */
+.btn-view {
+  margin-top: 10px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+}
+
+.btn-view:hover {
+  background: #2563eb;
+}
+.Bttn-Secondary{
+  margin-left: 1000px;
+  background:#0f172a;
+color:white;
+padding:12px 25px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+.Bttn-Secondary:hover{
+background-color: #6c757d;
+}
+.location{
+  color: #555555c2;
 }

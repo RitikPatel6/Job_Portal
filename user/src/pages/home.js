@@ -1,10 +1,112 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Axios from "axios";
 import "./home.css";
 
 
 function Home() {
+ const fileInputRef = useRef(null);
 
+  const [jobs, setJobs] = useState([]);
+  const [appliedJobs, setAppliedJobs] = useState([]); // ✅ NEW
+  const [loading, setLoading] = useState(true);
+  const user_id = 1; // same as Browsejob
+  const [categories, setCategories] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  
+
+useEffect(() => {
+  Axios.get("http://localhost:1337/api/getemployers")
+    .then((res) => setCompanies(res.data))
+    .catch((err) => console.log(err));
+}, []);
+  
+  
+
+  // ================= FETCH DATA =================
+  useEffect(() => {
+    fetchJobs();
+    fetchAppliedJobs(); // ✅ NEW
+  fetchCategories(); // ✅ NEW
+  }, []);
+  const fetchCategories = () => {
+  Axios.get("http://localhost:1337/api/categories")
+    .then((res) => {
+      setCategories(res.data || []);
+    })
+    .catch((err) => console.log(err));
+};
+
+  // ================= FETCH JOBS =================
+  const fetchJobs = () => {
+    setLoading(true);
+    Axios.get("http://localhost:1337/api/joblist")
+      .then((res) => {
+        setJobs(res.data || []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
+  // ================= FETCH APPLIED JOBS =================
+  const fetchAppliedJobs = () => {
+    Axios.get(`http://localhost:1337/api/applied/${user_id}`)
+      .then((res) => {
+        const ids = res.data.map(
+          (job) => job.Job_id || job.job_id
+        );
+        setAppliedJobs(ids);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  // ================= APPLY JOB =================
+  const applyJob = (job) => {
+    Axios.post("http://localhost:1337/api/apply", {
+      job_id: job.Job_id,
+      user_id: user_id,
+      company_id: job.Company_id || 1
+    })
+      .then((res) => {
+
+        if (res.data.success) {
+          alert("Applied Successfully ✅");
+
+          // ✅ UPDATE UI instantly
+          setAppliedJobs((prev) => [...prev, job.Job_id]);
+        } else {
+          alert("Already Applied ❌");
+        }
+
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Error ❌");
+      });
+  };
+
+  // ================= FILE UPLOAD =================
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      alert("Selected file: " + file.name);
+    }
+  };
+
+// Images array
+const images = [
+  "/img/svg_icon/1.svg",
+  "/img/svg_icon/2.svg",
+  "/img/svg_icon/3.svg",
+  "/img/svg_icon/4.svg"
+];
   const candidates = [
     { id: 1, name: "Markary Jondon", job: "Software Engineer", img: "/img/candiateds/1.png" },
     { id: 2, name: "John Smith", job: "UI/UX Designer", img: "/img/candiateds/2.png" },
@@ -14,6 +116,14 @@ function Home() {
 
   return (
     <>
+    {/* ✅ Hidden File Input */}
+      <input
+  type="file"
+  ref={fileInputRef}
+  style={{ display: "none" }}
+  accept=".pdf,.doc,.docx"
+  onChange={handleFileChange}
+/>
 
       {/* HERO SECTION */}
       <section className="hero-section">
@@ -29,7 +139,10 @@ function Home() {
             </p>
 
             <div className="hero-buttons">
-              <button className="btn-primary">Upload Resume</button>
+             <Link to="/uploadresume">
+              <button className="Btn-Primary">Upload Resume</button>
+             </Link>
+
              <Link to="/browsejob">
              <button className="btn-secondary">Browse Jobs</button>
              </Link>
@@ -69,156 +182,206 @@ function Home() {
       </section>
 
       {/* POPULAR CATEGORIES */}
-      <section className="categories-section">
-        <div className="container">
+     <section className="categories-section">
+  <div className="container">
 
-          <h2 className="section-title">Popular Categories</h2>
+    <h2 className="section-title">Popular Categories</h2>
 
-          <div className="categories-grid">
+    <div className="categories-grid">
 
-            <div className="category-card">
-              <h4>Design & Creative</h4>
-              <p>120 Jobs Available</p>
+      {categories.length > 0 ? (
+        categories.map((cat, index) => {
+
+          const icons = ["🎨","📈","💻","⚙️","📊","🛒","📞","🏥"];
+
+          return (
+            <div className="category-card" key={cat.Jobcat_id}>
+
+              <div className="icon">
+                {icons[index % icons.length]}
+              </div>
+
+              <h4>{cat.Jobcat_name}</h4>
+
+              <p>{cat.total_jobs} Jobs Available</p>
+
             </div>
+          );
+        })
+      ) : (
+        <p>No Categories Found</p>
+      )}
 
-            <div className="category-card">
-              <h4>Marketing</h4>
-              <p>85 Jobs Available</p>
-            </div>
+    </div>
 
-            <div className="category-card">
-              <h4>Software Development</h4>
-              <p>200 Jobs Available</p>
-            </div>
-
-            <div className="category-card">
-              <h4>Engineering</h4>
-              <p>95 Jobs Available</p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* JOB LIST */}
+  </div>
+</section>
+     {/* JOB LIST */}
       <section className="featured-jobs-section">
         <div className="container">
 
           <h2 className="section-title">Jobs Listing</h2>
 
-          <div className="job-card">
-            <div className="job-left">
-              <img src="/img/svg_icon/1.svg" alt="" />
-              <div>
-                <h4>Software Engineer</h4>
-                <p>Tech Corp  • California • Part-Time</p>
+          {loading ? (
+            <p>Loading jobs...</p>
+
+          ) : jobs.length > 0 ? (
+
+            jobs.slice(0, 4).map((job, index) => (
+
+              <div className="job-card" key={job.Job_id}>
+
+                <div className="job-left">
+
+                  <img src={images[index % images.length]} alt="logo" />
+
+                  <div>
+                    <h4>{job.Job_title}</h4>
+
+                    <p>
+                      {job.company_name} • {job.location} • {job.jobtype}
+                    </p>
+
+                    <p>₹{job.salary}</p>
+                    <p>Skills :{job.skill}</p>
+                    <p>Description:{job.description}</p>
+                  </div>
+
+                </div>
+
+                {/* ✅ FIXED BUTTON */}
+                {appliedJobs.includes(job.Job_id) ? (
+                  <button className="btn-applied">
+                    Applied ✅
+                  </button>
+                ) : (
+                  <button
+                    className="btn-apply"
+                    onClick={() => applyJob(job)}
+                  >
+                    Apply Now
+                  </button>
+                )}
+
               </div>
-            </div>
 
-            <button className="btn-apply">Apply Now</button>
-          </div>
+            ))
 
-          <div className="job-card">
-            <div className="job-left">
-              <img src="/img/svg_icon/2.svg" alt="" />
-              <div>
-                <h4>Digital Marketer</h4>
-                <p>Marketing Ltd  •  New York • Full Time</p>
-              </div>
-            </div>
+          ) : (
+            <p>No Jobs Available</p>
+          )}
 
-            <button className="btn-apply">Apply Now</button>
-          </div>
-           <div className="job-card">
-            <div className="job-left">
-              <img src="/img/svg_icon/3.svg" alt="" />
-              <div>
-                <h4>Wordpress Developer</h4>
-                <p>Web Studio • Texas •Part-time</p>
-              </div>
-            </div>
-
-            <button className="btn-apply">Apply Now</button>
-          </div>
-           <div className="job-card">
-            <div className="job-left">
-              <img src="/img/svg_icon/4.svg" alt="" />
-              <div>
-                <h4>Visual Designer</h4>
-                <p>Creative Agency •  Los Angeles• Full Time</p>
-              </div>
-            </div>
-
-            <button className="btn-apply">Apply Now</button>
+          {/* VIEW ALL */}
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <Link to="/browsejob">
+              <button className="Bttn-Secondary">View All Jobs</button>
+            </Link>
           </div>
 
         </div>
       </section>
 {/* TOP COMPANIES */}
         <section className="companies-section">
-        <div className="container">
+  <div className="container">
 
-            <div className="companies-header">
-            <h2 className="Section-title">Top Companies</h2>
-            <a href="jobs.html" className="browse-btn">Browse More Jobs</a>
+    <div className="companies-header">
+      <h2 className="Section-title">Top Companies</h2>
+
+      {/* ✅ React Router use karo instead of <a> */}
+      <Link to="/browsejob" className="browse-btn">
+        Browse More Jobs
+      </Link>
+    </div>
+
+    <div className="companies-grid">
+
+      {companies.length > 0 ? (
+        companies.slice(0, 4).map((company, index) => {
+
+          const icons = [
+            "/img/svg_icon/1.svg",
+            "/img/svg_icon/2.svg",
+            "/img/svg_icon/3.svg",
+            "/img/svg_icon/4.svg",
+            "/img/svg_icon/5.svg",
+          ];
+
+          return (
+            <div className="company-card" key={company.Company_id}>
+
+              {/* ✅ Dynamic Image OR fallback icon */}
+              <img
+                src={company.logo || icons[index % icons.length]}
+                alt="company"
+              />
+
+              <h4>{company.Company_name}</h4>
+
+              <p>
+                <span>{company.openings || 0}</span> Available positions
+              </p>
+
             </div>
+          );
+        })
+      ) : (
+        <p>No Companies Found</p>
+      )}
 
-            <div className="companies-grid">
+    </div>
 
-            <div className="company-card">
-                <img src="/img/svg_icon/5.svg" alt="" />
-                <h4>Snack Studio</h4>
-                <p><span>50</span> Available positions</p>
-            </div>
-
-            <div className="company-card">
-                <img src="/img/svg_icon/4.svg" alt="" />
-                <h4>Snack Studio</h4>
-                <p><span>50</span> Available positions</p>
-            </div>
-
-            <div className="company-card">
-                <img src="/img/svg_icon/3.svg" alt="" />
-                <h4>Snack Studio</h4>
-                <p><span>50</span> Available positions</p>
-            </div>
-
-            <div className="company-card">
-                <img src="/img/svg_icon/1.svg" alt="" />
-                <h4>Snack Studio</h4>
-                <p><span>50</span> Available positions</p>
-            </div>
-
-            </div>
-
-        </div>
-        </section>
+  </div>
+</section>
 
       {/* TOP CANDIDATES */}
-      <section className="candidate-section">
-        <div className="container">
+     <section className="candidate-section">
+  <div className="container">
 
-          <h2 className="section-title">Top Candidates</h2>
+    <div className="section-header">
+      <h2 className="section-title">Top Candidates</h2>
+      <p className="section-subtitle">
+        Discover skilled professionals ready to work
+      </p>
+    </div>
 
-          <div className="candidate-grid">
+    <div className="candidate-grid">
 
-            {candidates.map((item) => (
-              <div className="candidate-card" key={item.id}>
+      {candidates.length > 0 ? (
+        candidates.map((item) => (
+          <div className="candidate-card" key={item.id}>
 
-                <img src={item.img} alt={item.name} />
+            {/* Image */}
+            <div className="candidate-img">
+              <img
+                src={item.img}
+                alt={item.name}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/img/candidates/default.png";
+                }}
+              />
+            </div>
 
-                <h4>{item.name}</h4>
+            {/* Info */}
+            <div className="candidate-info">
+              <h4>{item.name}</h4>
+              <p>{item.job}</p>
 
-                <p>{item.job}</p>
-
-              </div>
-            ))}
+              <button className="btn-view">
+                View Profile
+              </button>
+            </div>
 
           </div>
+        ))
+      ) : (
+        <p className="no-data">No Candidates Found</p>
+      )}
 
-        </div>
-      </section>
+    </div>
+
+  </div>
+</section>
 
       {/* TESTIMONIAL AREA */}
 <section className="testimonial_area">
@@ -295,22 +458,6 @@ function Home() {
   </div>
 </section>
 
-      {/* CALL TO ACTION */}
-      <section className="cta-section">
-
-        <div className="container cta-box">
-
-          <h2>Looking for a Job?</h2>
-
-          <p>Upload your resume and start applying today.</p>
-
-          <button className="btn-primary">
-            Upload Resume
-          </button>
-
-        </div>
-
-      </section>
 
     </>
   );

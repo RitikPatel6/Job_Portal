@@ -1,0 +1,23 @@
+.upload-container{
+width:400px;
+margin:100px auto;
+text-align:center;
+padding:30px;
+background:white;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+border-radius:10px;
+}
+
+.upload-container input{
+margin:20px 0;
+}
+
+.upload-container button{
+padding:10px 20px;
+background:#ff6b35;
+border:none;
+color:white;
+font-weight:bold;
+border-radius:5px;
+cursor:pointer;
+}

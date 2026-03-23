@@ -49,7 +49,7 @@ function Header() {
           {user ? (
             <>
               <Link to="/resume" className="Resume-btn">
-                My Resume
+              Resume
               </Link>
 
               <button className="login-btn" onClick={Logout}>

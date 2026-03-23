@@ -1,49 +1,111 @@
-.resume-container{
-display:flex;
-justify-content:center;
-align-items:center;
-padding:40px;
-background:#f5f7fb;
-min-height:100vh;
+/* ===========================
+   Resume Container
+=========================== */
+.resume-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #fff8f0; /* very light orange-white background */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  min-height: 100vh;
 }
 
-.resume{
-width:750px;
-background:white;
-padding:40px;
-border-radius:10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
-font-family:Poppins;
+/* ===========================
+   Resume Card (Two Columns)
+=========================== */
+.resume {
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-.resume h1{
-font-size:32px;
-border-bottom:2px solid #ff5a3c;
-padding-bottom:10px;
-margin-bottom:20px;
+/* ===========================
+   Left Sidebar (Photo & Contact)
+=========================== */
+.resume-left {
+  background-color: #ff6f3c; /* orange sidebar */
+  color: #fff;
+  width: 250px;
+  padding: 40px 20px;
+  text-align: center;
 }
 
-.resume h2{
-margin-top:25px;
-color:#333;
+.resume-left img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  margin-bottom: 20px;
 }
 
-.resume p{
-font-size:15px;
-margin:5px 0;
+.resume-left h2 {
+  margin-bottom: 5px;
+  font-size: 1.5rem;
 }
 
-.download-btn{
-margin-top:30px;
-padding:12px 20px;
-background:#ff5a3c;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-size:16px;
+.resume-left p {
+  font-size: 0.9rem;
+  margin: 5px 0;
+  line-height: 1.4;
 }
 
-.download-btn:hover{
-background:#e14c30;
+/* ===========================
+   Right Section (Main Info)
+=========================== */
+.resume-right {
+  flex: 1;
+  padding: 40px 50px;
+}
+
+.resume-right h1 {
+  font-size: 2rem;
+  color: black; /* orange headings */
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ff6f3c;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.section {
+  margin-bottom: 25px;
+}
+
+.section h3 {
+  font-size: 1.2rem;
+  color: black;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.section p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* ===========================
+   Download Button
+=========================== */
+.download-btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: #ff6f3c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.3s;
+}
+
+.download-btn:hover {
+  background-color: #e85b20;
 }

@@ -17,7 +17,7 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "job_portal",
-  port: 3310,
+  port: 3309,
 });
 
 db.connect((err) => {
@@ -29,15 +29,40 @@ db.connect((err) => {
 });
 
 /* ================= MULTER ================= */
-
+// ✅ Multer Storage Config
 const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
   },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
 });
 
-const upload = multer({ storage });
+// ✅ File Filter (only resume files)
+const fileFilter = (req, file, cb) => {
+
+  const allowedTypes = /pdf|doc|docx|jpg|jpeg|png/;
+
+  const ext = path.extname(file.originalname).toLowerCase();
+
+  if (allowedTypes.test(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only PDF, DOC, DOCX, JPG, PNG allowed"), false);
+  }
+};
+
+// ✅ Multer Upload
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
+  fileFilter: fileFilter
+});
+
+
+
 
 /* ================================================= */
 /* ================= CATEGORY APIs ================= */
@@ -519,6 +544,7 @@ app.post("/api/companylogin", (req, res) => {
 /* ================= USER SIGNUP API ================= */
 
 app.post("/api/usersignup", upload.single("Upload_photo"), (req, res) => {
+  
 
   console.log("BODY:", req.body);
   console.log("FILE:", req.file);
@@ -530,16 +556,20 @@ app.post("/api/usersignup", upload.single("Upload_photo"), (req, res) => {
     password,
     Address,
     Education,
+    Skills,
     Experience,
-    Projects
+    Company_name,
+    Post,
+    Duration,
+    Work_description
   } = req.body;
 
   const Upload_photo = req.file ? req.file.filename : "";
 
   const sql = `
   INSERT INTO job_seeker
-  (Name, Contact_no, email, password, Address, Education, Experience, Projects, Upload_photo)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  (Name, Contact_no, email, password, Address, Education,Skills, Experience, Upload_photo,Company_name,Post,Duration,Work_description)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)
   `;
 
   db.query(
@@ -551,9 +581,13 @@ app.post("/api/usersignup", upload.single("Upload_photo"), (req, res) => {
       password,
       Address,
       Education,
+      Skills,
       Experience,
-      Projects,
-      Upload_photo
+      Upload_photo,
+      Company_name,
+    Post,
+    Duration,
+    Work_description
     ],
     (err, result) => {
 
@@ -610,7 +644,8 @@ app.post("/api/userlogin", (req, res) => {
   });
 
 });
-/* ================= GET USER DATA  FOR RESUME================= */
+/* ================= GET USER DATA  FOR My RESUME================= */
+
 app.get("/api/getuser/:id", (req, res) => {
 
   const id = req.params.id;
@@ -622,26 +657,214 @@ app.get("/api/getuser/:id", (req, res) => {
     if (err) {
       console.log(err);
       return res.send({
-        success: false
+        success: false,
+        message: "Database error"
       });
     }
 
     if (result.length === 0) {
       return res.send({
-        success: false
+        success: false,
+        message: "User not found"
       });
     }
 
+    // send the first object from result
     res.send({
       success: true,
-      data: result[0] // return single object
+      data: result[0]
     });
 
   });
 
 });
+
+// ✅ Upload upload resume API
+app.post("/uploadresume", upload.single("resume"), (req, res) => {
+  try {
+    const file = req.file;
+
+    // ❌ Check if file exists
+    if (!file) {
+      return res.status(400).json({
+        status: "error",
+        message: "No file uploaded"
+      });
+    }
+
+    // ✅ File name
+    const fileName = file.filename;
+
+    // ✅ Insert into database
+    const sql = "INSERT INTO resumes(file_name) VALUES (?)";
+
+    db.query(sql, [fileName], (err, result) => {
+
+      // ❌ DB error
+      if (err) {
+        console.log("DB ERROR:", err);
+        return res.status(500).json({
+          status: "error",
+          message: "Database error"
+        });
+      }
+
+      // ✅ Success response
+      return res.status(200).json({
+        status: "success",
+        message: "Resume uploaded successfully",
+        file: fileName,
+        url: `http://localhost:1337/uploads/${fileName}`,
+        id: result.insertId
+      });
+
+    });
+
+  } catch (error) {
+    console.log("SERVER ERROR:", error);
+
+    res.status(500).json({
+      status: "error",
+      message: "Server error"
+    });
+  }
+});
+
+// ================= GET JOB LIST =================
+app.get("/api/joblist", (req, res) => {
+
+  const sql = `
+    SELECT j.*, c.Jobcat_description
+    FROM jobs j
+    LEFT JOIN job_category c 
+    ON j.Jobcat_id = c.Jobcat_id
+    ORDER BY j.Job_id DESC
+  `;
+
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.log("Error:", err);
+      res.status(500).send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+// ================= APPLY JOB =================
+app.post("/api/apply", (req, res) => {
+
+  const { job_id, user_id, company_id } = req.body;
+
+  console.log("📥 APPLY DATA:", req.body);
+
+  // ✅ Validation
+  if (!job_id || !user_id) {
+    return res.send({
+      success: false,
+      message: "Missing Data"
+    });
+  }
+
+  // ✅ Check already applied
+  const checkSql = `
+    SELECT * FROM apply 
+    WHERE Job_id = ? AND User_id = ?
+  `;
+
+  db.query(checkSql, [job_id, user_id], (err, result) => {
+
+    if (err) {
+      console.log("CHECK ERROR:", err);
+      return res.send({ success: false });
+    }
+
+    // ❌ Already applied
+    if (result.length > 0) {
+      return res.send({
+        success: false,
+        message: "Already Applied"
+      });
+    }
+
+    // ✅ Insert new application
+    const insertSql = `
+      INSERT INTO apply
+      (Job_id, User_id, Apply_date, Status, Company_id)
+      VALUES (?, ?, NOW(), 1, ?)
+    `;
+
+    db.query(
+      insertSql,
+      [job_id, user_id, company_id || 1],
+      (err, insertResult) => {
+
+        if (err) {
+          console.log("INSERT ERROR:", err);
+          return res.send({ success: false });
+        }
+
+        console.log("✅ Applied Successfully");
+
+        res.send({
+          success: true,
+          message: "Applied Successfully"
+        });
+      }
+    );
+
+  });
+
+});
+
+
+// ================= GET APPLIED JOBS =================
+app.get("/api/applied/:userId", (req, res) => {
+
+  const userId = req.params.userId;
+
+  const sql = `
+    SELECT job.*
+    FROM apply
+    INNER JOIN job
+    ON apply.Job_id = job.Job_id
+    WHERE apply.User_id = ?
+  `;
+
+  db.query(sql, [userId], (err, result) => {
+
+    if (err) {
+      console.log(err);
+      return res.send([]);
+    }
+
+    res.send(result);
+  });
+
+});
+
+
+app.get("/api/categories", (req, res) => {
+  const sql = `
+    SELECT jc.Jobcat_id, jc.Jobcat_name,
+           COUNT(j.Job_id) AS total_jobs
+    FROM job_category jc
+    LEFT JOIN job j ON j.Jobcat_id = jc.Jobcat_id
+    GROUP BY jc.Jobcat_id
+  `;
+
+  db.query(sql, (err, result) => {
+    if (err) return res.json([]);
+    res.json(result);
+  });
+});
+
+
+
 /* ================= SERVER ================= */
 
 app.listen(1337, () => {
   console.log("Server running on http://localhost:1337");
 });
+
+// const photoPath = path.join(__dirname,"uploads",user.Upload_photo);
