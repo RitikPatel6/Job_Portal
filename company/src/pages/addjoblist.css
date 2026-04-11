@@ -73,7 +73,7 @@
 /* Submit Button - Hover applies ONLY here */
 .addjob-page .submit-btn {
   padding: 8px 20px;
-  background-color: #2563eb;
+  background-color: #4a90e2;
   color: white;
   border: none;
   border-radius: 4px;
@@ -82,7 +82,7 @@
 }
 
 .addjob-page .submit-btn:hover {
-  background-color: #1e40af; /* hover affects only the button */
+  background-color:#357bd8; /* hover affects only the button */
 }
 
 /* Responsive */

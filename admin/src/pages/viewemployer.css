@@ -128,3 +128,14 @@ table thead th {
   background-color: #dc2626;
   transform: translateY(-1px);
 }
+h2{
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  color: #333;
+  font-size: 22px;
+}
+.Name{
+  background-color: #2563eb;
+  color: white;
+}

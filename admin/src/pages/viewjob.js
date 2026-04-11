@@ -1,95 +1,172 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./viewjob.css";
 
-function ViewJob() {
+/* ================= EXPANDABLE TEXT COMPONENT ================= */
+const ExpandableText = ({ text }) => {
+  const [expanded, setExpanded] = useState(false);
 
-  const [jobs, setJobs] = useState([
-    {
-      id: 1,
-      title: "React Developer",
-      category: "IT",
-      location: "Remote",
-      salary: "6 LPA",
-      experience: "2 Years",
-      type: "Full Time",
-      status: "Active"
-    },
-    {
-      id: 2,
-      title: "HR Executive",
-      category: "HR",
-      location: "Mumbai",
-      salary: "4 LPA",
-      experience: "1 Year",
-      type: "Full Time",
-      status: "Active"
-    }
-  ]);
+  return (
+    <div>
+      <div
+        style={{
+          display: "-webkit-box",
+          WebkitLineClamp: expanded ? "unset" : 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "250px"
+        }}
+      >
+        {text}
+      </div>
 
-  const deleteJob = (id) => {
-    if (window.confirm("Are you sure you want to delete?")) {
-      setJobs(jobs.filter(job => job.id !== id));
+      {text && text.length > 60 && (
+        <span
+          onClick={() => setExpanded(!expanded)}
+          style={{
+            color: "#2563eb",
+            cursor: "pointer",
+            fontSize: "13px",
+            fontWeight: "600"
+          }}
+        >
+          {expanded ? "▲ Show Less" : "▼ Read More"}
+        </span>
+      )}
+    </div>
+  );
+};
+
+/* ================= MAIN COMPONENT ================= */
+function Viewjob() {
+
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+
+      const res = await axios.get("http://localhost:1337/api/joblist");
+
+      if (res.data.success) {
+        setJobs(res.data.data);
+      } else {
+        setJobs([]);
+      }
+
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      setJobs([]);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const deleteJob = async (id) => {
+    if (window.confirm("Are you sure you want to delete this job?")) {
+      try {
+        await axios.delete(`http://localhost:1337/api/deletejob/${id}`);
+        setJobs(jobs.filter((job) => job.Job_id !== id));
+      } catch (error) {
+        console.error("Delete error:", error);
+      }
+    }
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString("en-GB");
   };
 
   return (
     <div className="job-container">
-      <div className="job-card">
-        <div className="job-header">Job List</div>
 
+      {/* 🔥 TOP TITLE */}
+      <div className="page-title">All Job List</div>
+
+      <div className="job-card">
         <div className="job-table-wrapper">
+
           <table className="job-table">
+
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Title</th>
+                <th>#</th>
+                <th>Job Title</th>
                 <th>Category</th>
                 <th>Location</th>
                 <th>Salary</th>
-                <th>Experience</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th className="action-column">Action</th>
+                <th>Job Type</th>
+                <th>End Date</th>
+                <th>Skills</th>
+                <th>Description</th>
+                <th>Action</th>
               </tr>
             </thead>
 
             <tbody>
-              {jobs.map((job) => (
-                <tr key={job.id}>
-                  <td>{job.id}</td>
-                  <td>{job.title}</td>
-                  <td>{job.category}</td>
-                  <td>{job.location}</td>
-                  <td>{job.salary}</td>
-                  <td>{job.experience}</td>
-                  <td>{job.type}</td>
 
-                  <td>
-                    <span className="status-active">
-                      {job.status}
-                    </span>
+              {loading ? (
+                <tr>
+                  <td colSpan="10" className="no-data">
+                    Loading...
                   </td>
+                </tr>
+              ) : jobs.length > 0 ? (
 
-                  <td className="action-column">
-                    <div className="action-buttons">
-                      <button className="btn-edit">Edit</button>
+                jobs.map((job, index) => (
+                  <tr key={job.Job_id}>
+                    <td>{index + 1}</td>
+                    <td>{job.Job_title}</td>
+                    <td>{job.Jobcat_name}</td>
+                    <td>{job.location}</td>
+                    <td>₹ {job.salary}</td>
+                    <td>{job.jobtype}</td>
+                    <td>{formatDate(job.end_date)}</td>
+
+                    {/* 🔥 EXPANDABLE SKILLS */}
+                    <td>
+                      <ExpandableText text={job.skill} />
+                    </td>
+
+                    {/* 🔥 EXPANDABLE DESCRIPTION */}
+                    <td>
+                      <ExpandableText text={job.description} />
+                    </td>
+
+                    <td>
                       <button
                         className="btn-delete"
-                        onClick={() => deleteJob(job.id)}
+                        onClick={() => deleteJob(job.Job_id)}
                       >
                         Delete
                       </button>
-                    </div>
-                  </td>
+                    </td>
+                  </tr>
+                ))
 
+              ) : (
+                <tr>
+                  <td colSpan="10" className="no-data">
+                    No Jobs Found
+                  </td>
                 </tr>
-              ))}
+              )}
+
             </tbody>
+
           </table>
+
         </div>
       </div>
     </div>
   );
 }
 
-export default ViewJob;
+export default Viewjob;

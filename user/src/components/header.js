@@ -5,7 +5,7 @@ import "./header.css";
 function Header() {
 
   const navigate = useNavigate();
-  const user = sessionStorage.getItem("mydata");
+  const user = sessionStorage.getItem("userData");
 
   const Logout = () => {
     sessionStorage.clear();
@@ -29,17 +29,21 @@ function Header() {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/aboutas">About Us</Link></li>
             <li><Link to="/browsejob">Browse Job</Link></li>
+             <li><Link to="/application">Application</Link></li>
             <li><Link to="/candidates">Candidates</Link></li>
 
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <span>Blog</span>
               <ul className="submenu">
                 <li><Link to="/blog">Blog</Link></li>
                 <li><Link to="/singleblog">Single Blog</Link></li>
               </ul>
-            </li>
+            </li> */}
 
             <li><Link to="/contact">Contact</Link></li>
+            {user && (
+              <li><Link to="/notifications">🔔 Notifications</Link></li>
+            )}
           </ul>
         </nav>
 

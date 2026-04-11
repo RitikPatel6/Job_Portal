@@ -9,7 +9,7 @@ margin:0;
 .container{
 width:90%;
 max-width:1200px;
-margin:auto;
+margin-top: 2000px;
 }
 
 /* HERO */
@@ -430,4 +430,40 @@ background-color: #6c757d;
 }
 .location{
   color: #555555c2;
+}
+.Section-title{
+  display: flex;
+  text-align:center;
+  justify-content: center;
+
+
+}
+.latest{
+    display: flex;
+  text-align:center;
+  justify-content: center;
+  padding-bottom: 30px;
+}
+.Btn-Secondary{
+  background:#0f172a;
+color:white;
+padding:12px 25px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+  margin-left: 970px;
+  
+}
+.Btn-Secondary:hover{
+background-color: #6c757d;}
+.About-Cta{
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.View-btn{
+  color: #3b82f6;
+  cursor: pointer;
+  font-weight: 500;
+  padding-left: 1050px;
 }

@@ -1,7 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import Header from "./components/header";
 import Footer from "./components/footer";
+
 import Home from "./pages/home";
 import Browsejob from "./pages/browsejob";
 import Aboutas from "./pages/aboutas";
@@ -15,6 +17,9 @@ import Signup from "./pages/signup";
 import Resume from "./pages/resume";
 import Uploadresume from "./pages/uploadresume";
 import Candidatedetails from "./pages/candidatedetails";
+import Application from "./pages/application";
+import Editresume from "./pages/editresume";
+import Notifications from "./pages/notifications";
 
 function App() {
   return (
@@ -22,14 +27,14 @@ function App() {
 
       <Routes>
 
-        {/* Login Page (No Header / Footer) */}
+        {/* ===== WITHOUT HEADER/FOOTER ===== */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-         <Route path="/resume" element={<Resume />} />
-         <Route path="/uploadresume" element={<Uploadresume />} />
-          <Route path="/candidate/:id" element={<Candidatedetails />} />
+        <Route path="/resume" element={<Resume />} />
+        <Route path="/uploadresume" element={<Uploadresume />} />
+        <Route path="/candidate/:id" element={<Candidatedetails />} />
 
-        {/* All Pages With Header + Footer */}
+        {/* ===== WITH HEADER + FOOTER ===== */}
         <Route
           path="*"
           element={
@@ -41,12 +46,17 @@ function App() {
                 <Route path="/browsejob" element={<Browsejob />} />
                 <Route path="/aboutas" element={<Aboutas />} />
                 <Route path="/candidates" element={<Candidates />} />
-                <Route path="/jobdetails" element={<Jobdetails />} />
+
+                {/* ✅ IMPORTANT FIX */}
+                <Route path="/jobdetails/:id" element={<Jobdetails />} />
+
+
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/singleblog" element={<Singleblog />} />
                 <Route path="/contact" element={<Contact />} />
-
-
+                <Route path="/application" element={<Application />} />
+                <Route path="/editresume" element={<Editresume />} />
+                <Route path="/notifications" element={<Notifications />} />
               </Routes>
 
               <Footer />

@@ -1,104 +1,107 @@
-/* ===============================
-   JOB LIST PAGE
-================================ */
-
+/* ===== PAGE ===== */
 .job-container {
-  padding: 40px;
-  background-color: #f4f6f9;
+  padding: 30px;
+  background: #f4f7fb;
   min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
 }
 
+/* ===== TOP TITLE ===== */
+.page-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* ===== CARD ===== */
 .job-card {
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  padding: 15px;
 }
 
-.job-header {
-  background-color: #8b8d90;
-  color: white;
-  padding: 18px 24px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
+/* ===== TABLE WRAPPER ===== */
 .job-table-wrapper {
   overflow-x: auto;
 }
 
+/* ===== TABLE ===== */
 .job-table {
   width: 100%;
   border-collapse: collapse;
 }
 
+/* ===== TABLE HEADER ===== */
+.job-table thead {
+  background: linear-gradient(90deg, #2563eb, #1e40af);
+}
+
 .job-table th {
-  background-color: #2f66d0;
-  color: white;
-  padding: 14px;
-  text-align: left;
-  font-weight: 600;
-  font-size: 14px;
+  padding: 12px;
+  color: #ffffff;
+  background-color: #2563eb;
+  font-size: 13px;
+  text-align: center;
+  text-transform: uppercase;
 }
 
+/* ===== TABLE BODY ===== */
 .job-table td {
-  padding: 14px;
-  border-bottom: 1px solid #eee;
+  padding: 12px;
+  text-align: center;
   font-size: 14px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
 }
 
+/* Hover */
 .job-table tr:hover {
-  background-color: #f9fafb;
+  background: #f1f5ff;
 }
 
-/* Action Column Proper Width */
-.action-column {
-  min-width: 160px;
-  text-align: left;
-}
-
-/* Button Alignment */
-.action-buttons {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-/* Status */
-.status-active {
-  background-color: #198754;
-  color: white;
-  padding: 5px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  display: inline-block;
-}
-
-/* Buttons */
-.btn-edit {
-  background-color: #0d6efd;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.btn-edit:hover {
-  background-color: #0b5ed7;
-}
-
+/* ===== DELETE BUTTON ===== */
 .btn-delete {
-  background-color: #dc3545;
-  color: white;
+  padding: 6px 12px;
+  background: #ef4444;
+  color: #ffffff;
   border: none;
-  padding: 6px 14px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 13px;
 }
 
 .btn-delete:hover {
-  background-color: #bb2d3b;
+  background: #dc2626;
+}
+
+/* ===== NO DATA ===== */
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+  .job-table thead {
+    display: none;
+  }
+
+  .job-table tr {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .job-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+  }
 }

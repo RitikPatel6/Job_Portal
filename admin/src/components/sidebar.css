@@ -45,6 +45,8 @@
   letter-spacing: 1px;
   color: #64748b;
   margin-bottom: 20px;
+  text-align: left;
+  justify-content: flex-start;
 }
 
 /* ==============================

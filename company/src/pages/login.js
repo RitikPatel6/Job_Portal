@@ -1,102 +1,90 @@
-import React from "react";
-import "./login.css";
+import React, { useState } from "react";
+import axios from "axios";
 import Swal from "sweetalert2";
-import Axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "./login.css";
 
 function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
 
   const navigate = useNavigate();
 
-  const loginadd = () => {
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("Password").value;
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-    if (!email || !password) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Please fill in all fields",
-      });
-      return;
+    if (!formData.email || !formData.password) {
+      return Swal.fire("Error", "All fields are required", "error");
     }
 
-    Axios.post("http://localhost:1337/api/companylogin", {
-      email: email,
-      password: password,
-    })
-    .then((response) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:1337/api/companylogin",
+        formData
+      );
 
-      if (!response.data.success) {
+      if (res.data.success) {
+        // Store company session
+       sessionStorage.setItem("company", JSON.stringify(res.data.company));
 
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: response.data.message,
-        });
+        Swal.fire("Success", "Login Successful", "success");
+
+        // Redirect to dashboard
+        navigate("/dashboard");
 
       } else {
-
-        const company = response.data.company;
-
-        const data = {
-          Company_id: company.Company_id,
-          email: company.email,
-        };
-
-        sessionStorage.setItem("companyData", JSON.stringify(data));
-
-        Swal.fire({
-          icon: "success",
-          title: "Login Successfully",
-          text: `Welcome ${company.Company_name}`,
-        }).then(() => {
-
-          navigate("/dashboard");   // ✅ redirect
-
-        });
-
+        Swal.fire("Error", res.data.message, "error");
       }
 
-    })
-    .catch(() => {
-
-      Swal.fire({
-        icon: "error",
-        title: "Server Error",
-        text: "Unable to connect to server",
-      });
-
-    });
-
+    } catch (err) {
+      console.log(err);
+      Swal.fire("Error", "Server Error", "error");
+    }
   };
 
   return (
-    <div className="login-page">
-      <div className="login-card">
+  <div className="login-page">
+    <div className="login-box">
+      <h2>Company Login</h2>
+      <p className="login-subtitle">Welcome back! Please login to your account.</p>
 
-        <h3>Company Login</h3>
-
-        <div className="form-group">
-          <input type="email" placeholder="Email" id="email" />
+      <form onSubmit={handleLogin}>
+        <div className="input-group">
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter Email"
+            onChange={handleChange}
+          />
         </div>
 
-        <div className="form-group">
-          <input type="password" placeholder="Password" id="Password" />
+        <div className="input-group">
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter Password"
+            onChange={handleChange}
+          />
         </div>
 
-        <button className="login-btn" onClick={loginadd}>
-          Login
-        </button>
-
+        <button type="submit">Login</button>
         <div className="signup-link">
-          Don't have an account? <a href="/signup">Sign Up</a>
+          Don't have an account? <Link to="/signup">Sign Up</Link>
         </div>
 
-      </div>
+      </form>
     </div>
-  );
+  </div>
+);
 }
 
 export default Login;

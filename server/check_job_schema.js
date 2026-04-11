@@ -11,12 +11,28 @@ const con = mysql.createConnection({
 con.connect((err) => {
     if (err) throw err;
     console.log("Connected!");
-    con.query("DESCRIBE job", (err, result) => {
-        if (err) throw err;
-        console.log("Job Table Columns:");
-        result.forEach(row => {
-            console.log(`${row.Field} (${row.Type})`);
+
+    const tables = ['company', 'job', 'job_category', 'location'];
+    let completed = 0;
+
+    tables.forEach(table => {
+        con.query(`SHOW TABLES LIKE '${table}'`, (err, res) => {
+            if (res.length > 0) {
+                con.query(`DESCRIBE ${table}`, (err, result) => {
+                    if (err) throw err;
+                    console.log(`\n--- ${table} ---`);
+                    result.forEach(row => {
+                        console.log(`${row.Field} (${row.Type})`);
+                    });
+                    
+                    completed++;
+                    if (completed === tables.length) process.exit(0);
+                });
+            } else {
+                console.log(`\n--- ${table} (Not Found) ---`);
+                completed++;
+                if (completed === tables.length) process.exit(0);
+            }
         });
-        process.exit(0);
     });
 });

@@ -1,89 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "./login.css";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import Swal from "sweetalert2";
+import "./login.css";
 
 function Login() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  function handleLogin(e) {
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
+  const handleLogin = async e => {
     e.preventDefault();
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    if (!email || !password) {
-      Swal.fire({
-        icon: "warning",
-        title: "Please fill all fields"
-      });
+    if (!form.email || !form.password) {
+      Swal.fire("Warning", "Please fill all fields", "warning");
       return;
     }
 
-    Axios.post("http://localhost:1337/api/userlogin", {
-      email: email,
-      password: password
-    })
+    try {
+      const res = await Axios.post("http://localhost:1337/api/userlogin", form);
 
-    .then((response) => {
+      if (res.data.success) {
+        // Save session
+        sessionStorage.setItem("userData", JSON.stringify(res.data.data));
 
-      // LOGIN SUCCESS
-      if (response.data.success) {
-
-        const user = response.data.data[0];
-
-        // save user id
-        localStorage.setItem("userid", user.id);
-
-        // optional session data
-        const data = {
-          id: user.id,
-          email: user.email,
-          Name: user.Name
-        };
-
-        sessionStorage.setItem("mydata", JSON.stringify(data));
-
-        Swal.fire({
-          icon: "success",
-          title: "Login Successful",
-          text: `Welcome ${user.Name}`
-        }).then(() => {
-          window.location.href = "/";
+        Swal.fire("Success", `Welcome ${res.data.data.Name}`, "success").then(() => {
+          navigate("/"); // Redirect after login
         });
-
+      } else {
+        Swal.fire("Error", res.data.message, "error");
       }
 
-      // LOGIN FAILED
-      else {
-
-        Swal.fire({
-          icon: "error",
-          title: "Login Failed",
-          text: response.data.message
-        });
-
-      }
-
-    })
-
-    .catch(() => {
-
-      Swal.fire({
-        icon: "error",
-        title: "Server Error",
-        text: "Something went wrong"
-      });
-
-    });
-
-  }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Server error", "error");
+    }
+  };
 
   return (
-
     <div className="login-page">
-
       <div className="login-container">
 
         <div className="login-left">
@@ -92,47 +47,29 @@ function Login() {
         </div>
 
         <div className="login-right">
-
           <h2>Login</h2>
 
           <form onSubmit={handleLogin}>
-
             <div className="input-group">
               <label>Email</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter Email"
-                required
-              />
+              <input type="email" name="email" value={form.email} onChange={handleChange} required />
             </div>
 
             <div className="input-group">
               <label>Password</label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter Password"
-                required
-              />
+              <input type="password" name="password" value={form.password} onChange={handleChange} required />
             </div>
 
-            <button type="submit" className="login-btn">
-              Login
-            </button>
+            <button type="submit" className="login-btn">Login</button>
 
             <p className="register-link">
               Don't have an account? <Link to="/signup">Register</Link>
             </p>
-
           </form>
-
         </div>
 
       </div>
-
     </div>
-
   );
 }
 

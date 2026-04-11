@@ -30,7 +30,7 @@ function Sidebar() {
       <ul className="menu">
 
         <li>
-          <Link className="icon-home" to="/dashboard">Dashboard</Link>
+          <Link className="" to="/dashboard">📊 Dashboard</Link>
         </li>
 
         {/* Manage Job Category */}
@@ -38,8 +38,7 @@ function Sidebar() {
           <div
             className="manage icon-list"
             onClick={() => toggleDropdown("jobCategoryMenu")}
-          >
-            Manage Job Category
+          > Manage Job Category
           </div>
 
           <ul className="submenu" id="jobCategoryMenu">
@@ -72,19 +71,21 @@ function Sidebar() {
         </li>
 
         <li>
-          <Link className="icon-list" to="/managecandidates">Manage Candidates</Link>
+          <Link className="" to="/managecandidates">👨‍💼 Manage Candidates</Link>
         </li>
 
         <li>
-          <Link className="icon-user" to="/scheduleinterview">Schedule Interview</Link>
+          <Link className="" to="/scheduleinterview">📅 Schedule Interview</Link>
+        </li>
+         <li>
+          <Link className="" to="/companyindex">📥 Company Inbox</Link>
+        </li>
+        <li>
+          <Link className="" to="/sendmessage">📨 Send Message</Link>
         </li>
 
         <li>
-          <Link className="icon-user" to="/chatwithjobseeker">Chat With Job Seeker</Link>
-        </li>
-
-        <li>
-          <Link className="icon-settings" to="/profile">Manage Profile</Link>
+          <Link className="" to="/profile">👤 Manage Profile</Link>
         </li>
 
       </ul>

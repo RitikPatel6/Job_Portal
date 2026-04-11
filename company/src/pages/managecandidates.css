@@ -1,167 +1,136 @@
-/* ===== Page Background ===== */
-.managecandidates-page {
+/* ===== PAGE ===== */
+.manage-page {
   padding: 30px;
-  background-color: #ffffff;
+  background: #f4f7fb;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* centers all children horizontally */
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* ===== Heading ===== */
-.managecandidates-page h2 {
-  margin-bottom: 25px;
-  color: #1e3a8a;
-  font-size: 28px;
-  font-weight: 700;
-  text-align: center; /* centers the text */
-}
-
-/* ===== Card ===== */
-.managecandidates-page .form-card,
-.managecandidates-page .table-card {
-  background-color: #f8fbff;
-  padding: 25px;
-  border: 1px solid #dbeafe;
-  border-radius: 8px;
-  margin-bottom: 25px;
-  width: 100%;
-  max-width: 900px; /* keeps card from being too wide */
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-}
-
-/* ===== Form Grid ===== */
-.managecandidates-page .form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+.manage-title {
+  text-align: center;
   margin-bottom: 20px;
-  width: 100%;
+  color: #333;
 }
 
-/* ===== Inputs ===== */
-.managecandidates-page input,
-.managecandidates-page select {
-  padding: 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #cbd5e1;
-  font-size: 15px;
-  width: 100%;
-  transition: all 0.3s;
+/* ===== TABLE WRAPPER ===== */
+.table-wrapper {
+  overflow-x: auto;
 }
 
-.managecandidates-page input:focus,
-.managecandidates-page select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 6px rgba(37, 99, 235, 0.2);
-  outline: none;
-}
-
-/* ===== Submit Button ===== */
-.managecandidates-page .submit-btn {
-  background-color: #2563eb;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.managecandidates-page .submit-btn:hover {
-  background-color: #1e40af;
-  transform: translateY(-2px);
-}
-
-/* ===== Table ===== */
-.managecandidates-page table {
+/* ===== TABLE ===== */
+.candidate-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.managecandidates-page th {
-  background-color: #2563eb;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  font-weight: 600;
+/* ===== HEADER ===== */
+.candidate-table thead {
+  background: #2563eb;
+  color: #fff;
 }
 
-.managecandidates-page td {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #e2e8f0;
-}
-
-.managecandidates-page tr:nth-child(even) {
-  background-color: #f1f5f9;
-}
-
-/* ===== Status Colors ===== */
-.status.pending {
-  color: #f59e0b;
-  font-weight: bold;
-}
-
-.status.shortlisted {
-  color: #2563eb;
-  font-weight: bold;
-}
-
-.status.rejected {
-  color: #dc2626;
-  font-weight: bold;
-}
-
-/* ===== Action Buttons ===== */
-.btn-shortlist,
-.btn-reject,
-.btn-delete {
-  margin: 3px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  color: white;
-  font-weight: 500;
-  transition: all 0.3s;
-}
-
-.btn-shortlist {
-  background-color: #2563eb;
-}
-
-.btn-shortlist:hover {
-  background-color: #1e40af;
-  transform: translateY(-2px);
-}
-
-.btn-reject {
-  background-color: #dc2626;
-}
-
-.btn-reject:hover {
-  background-color: #b91c1c;
-  transform: translateY(-2px);
-}
-
-.btn-delete {
-  background-color: #6b7280;
-}
-
-.btn-delete:hover {
-  background-color: #4b5563;
-  transform: translateY(-2px);
-}
-
-.table-card table thead th {
-  background-color: #2563eb; /* header background color */
-  color: #ffffff;            /* text color */
+.candidate-table th {
   padding: 12px;
   text-align: center;
-  font-weight: 600;
 }
 
+/* ===== BODY ===== */
+.candidate-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+/* ===== STATUS ===== */
+.status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color:#333;
+  font-weight: bold;
+}
+
+.status.Shortlisted {
+  color: #28a745;
+}
+
+.status.Rejected {
+ 
+  color: red;
+}
+
+.status.Pending {
+  color:#333
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  padding: 6px 10px;
+  margin: 3px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 13px;
+}
+
+/* Individual buttons */
+.shortlist {
+  background: #28a745;
+}
+
+.shortlist:hover {
+  background: #218838;
+}
+
+.reject {
+  background: #dc3545;
+}
+
+.reject:hover {
+  background: #c82333;
+}
+
+.delete {
+  background: #6c757d;
+}
+
+.delete:hover {
+  background: #5a6268;
+}
+
+/* ===== NO DATA ===== */
+.no-data {
+  padding: 20px;
+  color: #777;
+  text-align: center;
+}
+
+/* ===== LOADING ===== */
+.loading-text {
+  text-align: center;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .candidate-table thead {
+    display: none;
+  }
+
+  .candidate-table tr {
+    display: block;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .candidate-table td {
+    display: flex;
+    justify-content: space-between;
+  }
+}

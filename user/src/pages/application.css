@@ -1,0 +1,108 @@
+/* Page background like browse job */
+.applications-wrapper {
+  background: #f1f5f9;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* SAME WIDTH as BrowseJob */
+.container {
+  width: 85%;
+  margin: auto;
+}
+/*  BANNER  */
+.browse-banner {
+  background: #f1f3f6;
+  padding: 60px 0;
+  text-align: center;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.browse-banner h2 {
+  color: #1c1616;
+  font-size: 35px;
+}
+
+/* Card container spacing */
+.glass-card {
+  margin-top: 30px;
+}
+
+/* Cards */
+.application-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Left */
+.app-left {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.app-icon {
+  width: 50px;
+  height: 50px;
+  background: #e2e8f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Text */
+.app-info h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.app-info p {
+  margin: 4px 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Right */
+.app-right {
+  text-align: right;
+}
+
+/* Status */
+.status {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.status.selected {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.status.applied {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+/* Button */
+.join-btn {
+  background: #f97316;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+/* Location */
+.location {
+  font-size: 13px;
+}

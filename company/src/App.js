@@ -8,7 +8,6 @@ import Signup from "./pages/signup";
 import Logout from "./pages/logout";
 import Dashboard from "./pages/dashboard";
 import ManageCandidates from "./pages/managecandidates";
-import ChatWithJobSeeker from "./pages/chatwithjobseeker";
 import ScheduleInterview from "./pages/scheduleinterview";
 import ManageProfile from "./pages/manageprofile";
 import AddJobCategory from "./pages/addjobcategory";
@@ -17,6 +16,8 @@ import ViewJob from "./pages/viewjob";
 import Addjoblist from "./pages/addjoblist";
 import Editjoblist from "./pages/editjoblist";
 import Viewjoblist from "./pages/viewjoblist";
+import CompanyInbox from "./pages/companyindex";
+import SendMessage from "./pages/sendmessage";
 
 
 
@@ -66,8 +67,10 @@ function App() {
   <Route path="/editjoblist" element={<DashboardLayout><Editjoblist/></DashboardLayout>} />
   <Route path="/managecandidates" element={<DashboardLayout><ManageCandidates /></DashboardLayout>} />
   <Route path="/scheduleinterview" element={<DashboardLayout><ScheduleInterview /></DashboardLayout>} />
-  <Route path="/chatwithjobseeker" element={<DashboardLayout><ChatWithJobSeeker /></DashboardLayout>} />
   <Route path="/profile" element={<DashboardLayout><ManageProfile /></DashboardLayout>} />
+   <Route path="/companyindex" element={<DashboardLayout><CompanyInbox /></DashboardLayout>} />
+   <Route path="/sendmessage" element={<DashboardLayout><SendMessage /></DashboardLayout>} />
+
 
 </Routes>
 

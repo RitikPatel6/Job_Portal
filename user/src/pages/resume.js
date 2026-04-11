@@ -6,7 +6,11 @@ function Resume() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const id = localStorage.getItem("userid");
+    let id = null;
+    const data = sessionStorage.getItem("userData");
+    if(data) {
+      id = JSON.parse(data).id;
+    }
 
     if (!id) {
       alert("Please login first");
@@ -93,6 +97,11 @@ function Resume() {
             onClick={() => window.print()}
           >
             Download Resume
+          </button>
+          <button  
+          className="edit-btn"
+          onClick={() => window.location="/editresume"}>
+          Edit Resume
           </button>
         </div>
       </div>

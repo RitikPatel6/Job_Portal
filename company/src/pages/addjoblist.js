@@ -4,9 +4,12 @@ import Axios from "axios";
 import "./addjoblist.css";
 
 function Addjoblist() {
-  const [categories, setCategories] = useState([]);
 
-  const [formData, setFormData] = useState({//formdata-value hold,setformdata-update value,usestate-react hook
+  const [categories, setCategories] = useState([]);
+  const [companyId, setCompanyId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
     Jobcat_id: "",
     Job_title: "",
     skill: "",
@@ -14,33 +17,45 @@ function Addjoblist() {
     description: "",
     location: "",
     salary: "",
-    jobtype: "fulltime",   // ✅ FIXED
+    jobtype: "fulltime",
   });
 
-  // ================= FETCH CATEGORIES =================
+  // ✅ GET COMPANY ID FROM SESSION
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await Axios.get("http://localhost:1337/api/jobcategories");
-        setCategories(res.data);
-      } catch (err) {
-        console.log("Error fetching categories:", err);
-      }
-    };
+    const companyData = sessionStorage.getItem("company");
 
-    fetchCategories();
+if (companyData) {
+  const company = JSON.parse(companyData);
+  setCompanyId(company.Company_id); // ✅ correct
+}
+ else {
+      Swal.fire("Error", "Please login first", "error");
+    }
   }, []);
 
-  // ================= HANDLE INPUT CHANGE =================
+  // ✅ FETCH CATEGORIES
+  useEffect(() => {
+    if (companyId) {
+      Axios.get(`http://localhost:1337/api/jobcategories?Company_id=${companyId}`)
+        .then((res) => setCategories(res.data))
+        .catch((err) => console.log("Category Error:", err));
+    }
+  }, [companyId]);
+
+  // ✅ HANDLE INPUT
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ================= ADD JOB =================
+  // ✅ ADD JOB
   const Addjob = async () => {
+
+    if (!companyId) {
+      return Swal.fire("Error", "Company not logged in", "error");
+    }
+
+    if (loading) return;
+
     const {
       Jobcat_id,
       Job_title,
@@ -49,53 +64,80 @@ function Addjoblist() {
       description,
       location,
       salary,
-      jobtype,
+      jobtype
     } = formData;
 
+    // ✅ Validation
     if (
       !Jobcat_id ||
-      !Job_title ||
-      !skill ||
+      !Job_title.trim() ||
+      !skill.trim() ||
       !end_date ||
-      !description ||
-      !location ||
-      !salary ||
-      !jobtype
+      !description.trim() ||
+      !location.trim() ||
+      !salary
     ) {
       return Swal.fire("Error", "Fill all required details", "error");
     }
 
+    const payload = {
+      Jobcat_id: parseInt(Jobcat_id),
+      Job_title: Job_title.trim(),
+      skill: skill.trim(),
+      end_date,
+      description: description.trim(),
+      location: location.trim(),
+      salary: parseFloat(salary) || 0,
+      jobtype,
+      Company_id: companyId, // ✅ FIXED (dynamic)
+    };
+
+    console.log("Sending Payload:", payload); // 🔍 Debug
+
     try {
-      await Axios.post("http://localhost:1337/api/joblist", formData);
+      setLoading(true);
 
-      Swal.fire("Success", "Job added successfully", "success");
+      const res = await Axios.post(
+        "http://localhost:1337/api/joblist",
+        payload
+      );
+      
 
-      // Clear form
-      setFormData({
-        Jobcat_id: "",
-        Job_title: "",
-        skill: "",
-        end_date: "",
-        description: "",
-        location: "",
-        salary: "",
-        jobtype: "fulltime",   // ✅ FIXED
-      });
+      if (res.data.success) {
+        Swal.fire("Success", "Job added successfully", "success");
+
+        // ✅ Reset form
+        setFormData({
+          Jobcat_id: "",
+          Job_title: "",
+          skill: "",
+          end_date: "",
+          description: "",
+          location: "",
+          salary: "",
+          jobtype: "fulltime",
+        });
+
+      } else {
+        Swal.fire("Error", res.data.error || "Failed to add job", "error");
+      }
 
     } catch (err) {
-      console.log("Insert error:", err.response?.data || err.message);
-      Swal.fire("Error", "Error during data insert", "error");
+      console.log("Server Error:", err);
+      Swal.fire("Error", "Server error", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="addjob-page">
       <div className="form-card">
+
         <div className="form-header">Add New Job</div>
 
         <div className="form-grid">
 
-          {/* Job Title */}
           <div className="form-group">
             <label>Job Title *</label>
             <input
@@ -106,7 +148,6 @@ function Addjoblist() {
             />
           </div>
 
-          {/* Category */}
           <div className="form-group">
             <label>Category *</label>
             <select
@@ -123,7 +164,6 @@ function Addjoblist() {
             </select>
           </div>
 
-          {/* Location */}
           <div className="form-group">
             <label>Location *</label>
             <input
@@ -134,7 +174,6 @@ function Addjoblist() {
             />
           </div>
 
-          {/* Salary */}
           <div className="form-group">
             <label>Salary *</label>
             <input
@@ -145,7 +184,6 @@ function Addjoblist() {
             />
           </div>
 
-          {/* Job Type */}
           <div className="form-group">
             <label>Job Type *</label>
             <select
@@ -159,7 +197,6 @@ function Addjoblist() {
             </select>
           </div>
 
-          {/* End Date */}
           <div className="form-group">
             <label>End Date *</label>
             <input
@@ -170,21 +207,18 @@ function Addjoblist() {
             />
           </div>
 
-          {/* Skills */}
           <div className="form-group full-width">
             <label>Skills *</label>
             <input
               type="text"
               name="skill"
-              placeholder="React, Node, MySQL"
               value={formData.skill}
               onChange={handleChange}
             />
           </div>
 
-          {/* Description */}
           <div className="form-group full-width">
-            <label>Job Description *</label>
+            <label>Description *</label>
             <textarea
               name="description"
               rows="4"
@@ -192,13 +226,19 @@ function Addjoblist() {
               onChange={handleChange}
             ></textarea>
           </div>
+
         </div>
 
         <div className="form-actions">
-          <button type="button" className="submit-btn" onClick={Addjob}>
-            Add Job
+          <button
+            className="submit-btn"
+            onClick={Addjob}
+            disabled={loading}
+          >
+            {loading ? "Adding..." : "Add Job"}
           </button>
         </div>
+
       </div>
     </div>
   );

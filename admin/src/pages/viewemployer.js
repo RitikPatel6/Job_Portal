@@ -125,13 +125,13 @@ const handleReject = (Company_id) => {
           <table className="table table-striped table-hover">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Company Name</th>
-                <th>Contact No</th>
-                <th>Email</th>
-                <th>Location</th>
-                <th>ID Proof</th>
-                <th>Action</th>
+                <th class="Name">#</th>
+                <th class="Name">Company Name</th>
+                <th class="Name">Contact No</th>
+                <th class="Name">Email</th>
+                <th class="Name">Location</th>
+                <th class="Name">ID Proof</th>
+                <th class="Name">Action</th>
               </tr>
             </thead>
 

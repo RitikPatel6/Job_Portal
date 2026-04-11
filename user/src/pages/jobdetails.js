@@ -1,96 +1,76 @@
-import React from "react";
-import "./jobdetails.css";
+// JobDetails.js
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import "./jobdetails.css"; // new CSS file
 
 function Jobdetails() {
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id) fetchJob();
+    else setLoading(false);
+  }, [id]);
+
+  const fetchJob = async () => {
+    try {
+      const res = await axios.get(`http://localhost:1337/api/job/${id}`);
+      if (res.data.success) setJob(res.data.data);
+      else if (Array.isArray(res.data)) setJob(res.data[0]);
+      else setJob(null);
+    } catch (err) {
+      console.error(err);
+      setJob(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <h3 className="jd-loading">Loading...</h3>;
+  if (!job) return <h3 className="jd-error">Invalid Job ❌</h3>;
+
   return (
-    <div className="job-details-page">
+    <div className="jd-wrapper">
 
-      {/* Banner */}
-      <section className="job-banner">
-        <h1>Software Engineer</h1>
-      </section>
+      <button className="jd-back-btn" onClick={() => navigate(-1)}>
+        ⬅ Back
+      </button>
 
-      {/* Main Content */}
-      <section className="job-details-container container">
-        <div className="job-layout">
+      <div className="jd-card">
 
-          {/* LEFT SIDE */}
-          <div className="job-left">
+        <h2 className="jd-title">{job.Job_title}</h2>
 
-            {/* Job Header */}
-            <div className="job-header-card">
-              <div className="job-header-left">
-                <div className="job-thumb">
-                  <img src="/img/svg_icon/1.svg" alt="job icon" />
-                </div>
-                <div className="job-info">
-                  <h2>Software Engineer</h2>
-                  <p>📍 California, USA • ⏰ Part-time</p>
-                </div>
-              </div>
-            </div>
+        <p className="jd-info"><b>Location:</b> {job.location}</p>
+        <p className="jd-info"><b>Salary:</b> ₹{job.salary}</p>
+        <p className="jd-info"><b>Job Type:</b> {job.jobtype}</p>
 
-            {/* Job Description */}
-            <div className="job-description">
-              <div className="job-section">
-                <h3>Job Description</h3>
-                <p>
-                  There are many variations of passages of Lorem Ipsum available,
-                  but the majority have suffered alteration in some form.
-                </p>
-              </div>
+        <hr />
 
-              <div className="job-section">
-                <h3>Responsibilities</h3>
-                <ul>
-                  <li>Experience in the relevant field.</li>
-                  <li>Strong analytical thinking.</li>
-                  <li>Good communication skills.</li>
-                  <li>Problem solving ability.</li>
-                </ul>
-              </div>
+        <h3 className="jd-section-header">Company Information</h3>
+        <p className="jd-company"><b>Name:</b> {job.Company_name}</p>
+        <p className="jd-company"><b>Email:</b> {job.Company_email}</p>
+        <p className="jd-company"><b>Contact:</b> {job.Company_contact}</p>
+        {job.website_URL && (
+          <p className="jd-company">
+            <b>Website:</b> <a href={job.website_URL} target="_blank" rel="noreferrer">{job.website_URL}</a>
+          </p>
+        )}
 
-              <div className="job-section">
-                <h3>Qualifications</h3>
-                <ul>
-                  <li>Bachelor Degree in Computer Science</li>
-                  <li>2+ years experience</li>
-                  <li>Team collaboration skills</li>
-                </ul>
-              </div>
-            </div>
+        <h3 className="jd-section-header">Skills</h3>
+        <p className="jd-skills">{job.skill}</p>
 
-            {/* Apply Form */}
-            <div className="apply-job">
-              <h3>Apply for the Job</h3>
-              <form className="apply-form">
-                <input type="text" placeholder="Your Name" />
-                <input type="email" placeholder="Email Address" />
-                <input type="text" placeholder="Portfolio Link" />
-                <input type="file" />
-                <textarea rows="5" placeholder="Cover Letter"></textarea>
-                <button className="apply-btn">Apply Now</button>
-              </form>
-            </div>
+        <hr />
 
-          </div>
+        <h3 className="jd-section-header">Description</h3>
+        <p className="jd-desc">{job.description}</p>
 
-          {/* RIGHT SIDE */}
-          <div className="job-right">
-            <div className="job-summary-card">
-              <h3>Job Summary</h3>
-              <ul>
-                <li>Published on: <span>12 Nov 2019</span></li>
-                <li>Vacancy: <span>2 Positions</span></li>
-                <li>Salary: <span>50k - 120k / year</span></li>
-                <li>Location: <span>California, USA</span></li>
-                <li>Job Nature: <span>Full Time</span></li>
-              </ul>
-            </div>
-          </div>
+      </div>
 
-        </div>
-      </section>
     </div>
   );
 }

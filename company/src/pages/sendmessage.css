@@ -1,0 +1,424 @@
+.sendmsg-page {
+  background: #fdfdfd;
+  min-height: 100vh;
+}
+
+/* BANNER */
+.sendmsg-banner {
+  background: #f1f3f6;
+  padding: 50px 0;
+  text-align: center;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.sendmsg-banner h2 {
+  font-size: 2rem;
+  color: #001d38;
+  margin-bottom: 8px;
+}
+
+.sendmsg-banner p {
+  color: #666;
+  font-size: 1rem;
+}
+
+/* LAYOUT */
+.sendmsg-layout {
+  display: flex;
+  gap: 25px;
+  margin-top: 30px;
+  padding-bottom: 60px;
+  max-width: 1200px;
+}
+
+/* SIDEBAR */
+.candidate-msg-sidebar {
+  flex: 1;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 20px;
+  height: fit-content;
+  max-height: 680px;
+  display: flex;
+  flex-direction: column;
+}
+
+.candidate-msg-sidebar h3 {
+  font-size: 1.1rem;
+  color: #001d38;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.cand-scroll-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.job-group-section {
+  margin-bottom: 20px;
+}
+
+.job-group-header {
+  background: #f1f3f6;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  color: #001d38;
+  border: 1px solid #e1e4e8;
+  transition: 0.2s;
+}
+
+.job-group-header:hover {
+  background: #e1e4e8;
+}
+
+.job-group-header.active {
+  background: #001d38;
+  color: white;
+  border-color: #001d38;
+}
+
+.count-badge {
+  background: #00d363;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.job-candidates-list {
+  padding-left: 10px;
+  border-left: 2px solid #eee;
+  margin-left: 5px;
+}
+
+.cand-card.sm-card {
+  padding: 8px 12px;
+  gap: 10px;
+}
+
+.cand-card.sm-card .cand-initial {
+  width: 32px;
+  height: 32px;
+  font-size: 0.9rem;
+}
+
+.cand-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cand-card:hover {
+  background: #f9f9f9;
+}
+
+.cand-card.active {
+  border-color: #00d363;
+  background: #f0fff4;
+}
+
+.cand-initial {
+  width: 42px;
+  height: 42px;
+  background: #001d38;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.cand-info h4 {
+  margin: 0 0 3px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.cand-info p {
+  margin: 0 0 3px 0;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.cand-info small {
+  display: block;
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.mode-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.mode-tag.online {
+  background: #e0f7ef;
+  color: #00a550;
+}
+
+.mode-tag.offline {
+  background: #fff0e0;
+  color: #d35400;
+}
+
+.cand-sub-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-badge {
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  text-transform: uppercase;
+}
+
+.status-badge.shortlisted {
+  background: #e0f7ef;
+  color: #00a550;
+}
+
+.status-badge.rejected {
+  background: #ffe0e6;
+  color: #d63031;
+}
+
+.status-badge.pending {
+  background: #f1f3f6;
+  color: #666;
+}
+
+.status-badge.interview\ scheduled {
+  background: #e1f5fe;
+  color: #0288d1;
+}
+
+/* COMPOSE AREA */
+.msg-compose-area {
+  flex: 2;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.no-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  padding: 40px;
+  text-align: center;
+  color: #aaa;
+}
+
+.big-mail-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.4;
+}
+
+/* COMPOSE BOX */
+.compose-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.compose-header {
+  background: #001d38;
+  color: white;
+  padding: 18px 25px;
+}
+
+.compose-header.mass-theme {
+  background: #00d363;
+}
+
+.compose-header h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+}
+
+.compose-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.info-alert {
+  background: #fff8e1;
+  border-left: 4px solid #ffc107;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 0.85rem;
+  color: #856404;
+}
+
+.mass-btn {
+  background: #00d363 !important;
+}
+
+.mass-btn:hover {
+  background: #001d38 !important;
+}
+
+.compose-form {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-row label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-row input,
+.form-row textarea,
+.status-filter-select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.form-row textarea {
+  resize: vertical;
+}
+
+/* QUICK TEMPLATES */
+.quick-templates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.quick-templates p {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #555;
+  margin: 0;
+  width: 100%;
+}
+
+.tmpl-btn {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tmpl-btn:hover {
+  background: #001d38;
+  color: white;
+  border-color: #001d38;
+}
+
+/* SEND BUTTON */
+.send-msg-btn {
+  background: #00d363;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: 0.2s;
+}
+
+.send-msg-btn:hover {
+  background: #001d38;
+}
+
+.no-cand {
+  text-align: center;
+  color: #aaa;
+  padding: 30px 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .sendmsg-layout {
+    flex-direction: column;
+  }
+}
+
+/* DELETE BUTTON IN SIDEBAR */
+.sm-card {
+  position: relative !important;
+}
+
+.sm-delete-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 0, 0, 0.05);
+  border: 1px solid transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 5;
+}
+
+.sm-card:hover .sm-delete-btn {
+  opacity: 0.5;
+}
+
+.sm-delete-btn:hover {
+  opacity: 1 !important;
+  background: rgba(255, 0, 0, 0.1);
+  border-color: rgba(255, 0, 0, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.sm-delete-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}

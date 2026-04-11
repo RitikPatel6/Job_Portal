@@ -1,98 +1,197 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import "./home.css";
 
-
 function Home() {
- const fileInputRef = useRef(null);
 
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
-  const [appliedJobs, setAppliedJobs] = useState([]); // ✅ NEW
+  const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const user_id = 1; // same as Browsejob
+  const [locations, setLocations] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [userId, setUserId] = useState(null);
   const [companies, setCompanies] = useState([]);
-  
+  const[showAll,setShowAll] = useState(false);
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
 
 useEffect(() => {
-  Axios.get("http://localhost:1337/api/getemployers")
-    .then((res) => setCompanies(res.data))
-    .catch((err) => console.log(err));
+  fetchCompanies();
 }, []);
-  
-  
 
-  // ================= FETCH DATA =================
+  const [filters, setFilters] = useState({
+    keyword: "",
+    Company_id: "",
+    location: ""
+  });
+
+  // ================= GET USER =================
   useEffect(() => {
-    fetchJobs();
-    fetchAppliedJobs(); // ✅ NEW
-  fetchCategories(); // ✅ NEW
+    const data = sessionStorage.getItem("userData");
+    if (data) {
+      const user = JSON.parse(data);
+      setUserId(user.id);
+    }
   }, []);
-  const fetchCategories = () => {
-  Axios.get("http://localhost:1337/api/categories")
-    .then((res) => {
-      setCategories(res.data || []);
-    })
-    .catch((err) => console.log(err));
+
+  // ================= FETCH FILTER DATA =================
+  useEffect(() => {
+    fetchCompanies();
+    fetchLocations();
+    fetchCategories();
+  }, []);
+
+  const fetchCompanies = async () => {
+  try {
+    const res = await Axios.get("http://localhost:1337/api/companies");
+
+    // ✅ Handle all possible API formats
+    const data = res.data.data || res.data || [];
+
+    // ✅ Ensure always array
+    setCompanies(Array.isArray(data) ? data : []);
+
+  } catch (err) {
+    console.log("Company Fetch Error:", err);
+
+    // ✅ fallback to empty
+    setCompanies([]);
+  }
 };
+  const fetchLocations = async () => {
+    try {
+      const res = await Axios.get("http://localhost:1337/api/locations");
+      const data = res.data.data || res.data || [];
+      setLocations(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await Axios.get("http://localhost:1337/api/categories");
+      setCategories(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // ================= FETCH JOBS =================
-  const fetchJobs = () => {
-    setLoading(true);
-    Axios.get("http://localhost:1337/api/joblist")
-      .then((res) => {
-        setJobs(res.data || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+      const res = await Axios.get("http://localhost:1337/api/joblist");
+      let data = res.data.data || res.data || [];
+      if (!Array.isArray(data)) data = [];
+
+      const today = new Date();
+      const activeJobs = data.filter(job => {
+        if (!job.end_date) return true;
+        const endDate = new Date(job.end_date);
+        endDate.setHours(23, 59, 59, 999);
+        return today <= endDate;
       });
+
+      setJobs(activeJobs);
+    } catch (err) {
+      console.log("Job Error:", err);
+      setJobs([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ================= FETCH APPLIED JOBS =================
-  const fetchAppliedJobs = () => {
-    Axios.get(`http://localhost:1337/api/applied/${user_id}`)
-      .then((res) => {
-        const ids = res.data.map(
-          (job) => job.Job_id || job.job_id
-        );
-        setAppliedJobs(ids);
-      })
-      .catch((err) => console.log(err));
+  useEffect(() => {
+    if (userId) {
+      fetchAppliedJobs();
+      fetchRecommendedJobs();
+    }
+  }, [userId]);
+
+  const fetchAppliedJobs = async () => {
+    try {
+      const res = await Axios.get(
+        `http://localhost:1337/api/applied/${userId}`
+      );
+
+      const data = res.data.data || res.data || [];
+      const ids = data.map((item) => Number(item.Job_id));
+
+      setAppliedJobs(ids);
+    } catch (err) {
+      console.log("Applied Jobs Error:", err);
+    }
+  };
+
+  const fetchRecommendedJobs = async () => {
+    if (!userId) return;
+    try {
+      console.log("Fetching recommended jobs for User ID:", userId);
+      const res = await Axios.get(`http://localhost:1337/api/recommended-jobs/${userId}`);
+      console.log("Recommended Jobs Result:", res.data);
+      if (res.data.success) {
+        setRecommendedJobs(res.data.data);
+      }
+    } catch (err) {
+      console.log("Recommended Jobs Error:", err);
+    }
+  };
+
+  // ================= HANDLE FILTER =================
+  const handleChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  // ================= SEARCH =================
+  const searchJobs = () => {
+    navigate('/browsejob', { state: { searchFilters: filters } });
   };
 
   // ================= APPLY JOB =================
-  const applyJob = (job) => {
-    Axios.post("http://localhost:1337/api/apply", {
-      job_id: job.Job_id,
-      user_id: user_id,
-      company_id: job.Company_id || 1
-    })
-      .then((res) => {
+  const applyJob = async (job) => {
 
-        if (res.data.success) {
-          alert("Applied Successfully ✅");
+    if (!userId) {
+      alert("Please login first ❌");
+      window.location.href = "/login";
+      return;
+    }
 
-          // ✅ UPDATE UI instantly
-          setAppliedJobs((prev) => [...prev, job.Job_id]);
-        } else {
-          alert("Already Applied ❌");
+    try {
+      const res = await Axios.post(
+        "http://localhost:1337/api/apply",
+        {
+          Job_id: job.Job_id,
+          User_id: userId,
+          Company_id: job.Company_id
         }
+      );
 
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("Error ❌");
-      });
+      if (res.data.success) {
+        alert("Applied Successfully ✅");
+        setAppliedJobs((prev) => [...prev, Number(job.Job_id)]);
+      } else {
+        alert(res.data.message || "Already Applied ❌");
+      }
+
+    } catch (err) {
+      console.log("Apply Error:", err);
+      alert("Error ❌");
+    }
   };
 
-  // ================= FILE UPLOAD =================
-  const handleUploadClick = () => {
-    fileInputRef.current.click();
-  };
-
+  // ================= FILE =================
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -100,13 +199,8 @@ useEffect(() => {
     }
   };
 
-// Images array
-const images = [
-  "/img/svg_icon/1.svg",
-  "/img/svg_icon/2.svg",
-  "/img/svg_icon/3.svg",
-  "/img/svg_icon/4.svg"
-];
+  // ================= PLACEHOLDER IMAGES & CANDIDATES =================
+  const images = ["/img/svg_icon/1.svg","/img/svg_icon/2.svg","/img/svg_icon/3.svg","/img/svg_icon/4.svg"];
   const candidates = [
     { id: 1, name: "Markary Jondon", job: "Software Engineer", img: "/img/candiateds/1.png" },
     { id: 2, name: "John Smith", job: "UI/UX Designer", img: "/img/candiateds/2.png" },
@@ -114,212 +208,258 @@ const images = [
     { id: 4, name: "David Miller", job: "Data Analyst", img: "/img/candiateds/4.png" }
   ];
 
+  const testimonials = [
+    {
+      text: "Working in conjunction with humanitarian aid agencies, we have supported programmes to help alleviate human suffering through animal welfare when people might depend on livestock as their only source of income or food.",
+      author: "Micky Mouse"
+    },
+    {
+      text: "Animal welfare programs not only help livestock but also strengthen the local economy and improve community health.",
+      author: "Donald Duck"
+    },
+    {
+      text: "By supporting communities in need, we create a sustainable environment for both humans and animals.",
+      author: "Goofy"
+    }
+  ];
+  const displayedCategories = showAll ? categories : categories.slice(0, 4);
+  const activeCompanies = companies.filter(company => jobs.some(job => Number(job.Company_id) === Number(company.Company_id)));
+
   return (
     <>
-    {/* ✅ Hidden File Input */}
-      <input
-  type="file"
-  ref={fileInputRef}
-  style={{ display: "none" }}
-  accept=".pdf,.doc,.docx"
-  onChange={handleFileChange}
-/>
+      {/* Hidden File Input */}
+      <input type="file" ref={fileInputRef} style={{ display: "none" }} accept=".pdf,.doc,.docx" onChange={handleFileChange} />
 
       {/* HERO SECTION */}
       <section className="hero-section">
         <div className="container hero-container">
-
           <div className="hero-text">
             <h5>4500+ Jobs Available</h5>
             <h1>Find Your Dream Job Today</h1>
-
-            <p>
-              Discover thousands of job opportunities with all the information
-              you need. It's your future.
-            </p>
-
+            <p>Discover thousands of job opportunities with all the information you need. It's your future.</p>
             <div className="hero-buttons">
-             <Link to="/uploadresume">
-              <button className="Btn-Primary">Upload Resume</button>
-             </Link>
-
-             <Link to="/browsejob">
-             <button className="btn-secondary">Browse Jobs</button>
-             </Link>
+              <Link to="/uploadresume"><button className="Btn-Primary">Upload Resume</button></Link>
+              <Link to="/browsejob"><button className="btn-secondary">Browse Jobs</button></Link>
             </div>
           </div>
-
           <div className="hero-image">
             <img src="/img/banner/illustration.png" alt="banner" />
           </div>
-
         </div>
       </section>
 
       {/* JOB SEARCH */}
       <section className="job-search-section">
         <div className="container job-search-container">
+          <input type="text" name="keyword" placeholder="Job title or keyword" onChange={handleChange} />
 
-          <input type="text" placeholder="Job title or keyword" />
+          {/* Company Dynamic */}
+          <select
+          name="category"
+          value={filters.category}
+          onChange={handleChange}
+        >
+          <option value="">All Categories</option>
 
-          <select>
-            <option>Location</option>
-            <option>Ahmedabad</option>
-            <option>Vadodara</option>
-            <option>Surat</option>
+          {categories.map((cat) => (
+            <option key={cat.Jobcat_id} value={cat.Jobcat_id}>
+              {cat.Jobcat_name}
+            </option>
+          ))}
+        </select>
+
+          {/* Location Dynamic */}
+          <select name="location" value={filters.location} onChange={handleChange}>
+            <option value="">Location</option>
+            {locations.map(loc => (
+              <option key={loc.location_id} value={loc.location_id}>{loc.location}</option>
+            ))}
           </select>
 
-          <select>
-            <option>Category</option>
-            <option>Design</option>
-            <option>Development</option>
-            <option>Marketing</option>
-          </select>
-
-          <button className="btn-search">Find Job</button>
-
+          <button className="btn-search" onClick={searchJobs}>Find Job</button>
         </div>
       </section>
-
-      {/* POPULAR CATEGORIES */}
-     <section className="categories-section">
+ {/* JOB LIST */}
+    <section className="featured-jobs-section">
   <div className="container">
 
-    <h2 className="section-title">Popular Categories</h2>
+    <h2 className="latest">Latest Jobs</h2>
 
-    <div className="categories-grid">
+    {loading ? (
+      <p>Loading...</p>
+    ) : jobs.length > 0 ? (
 
-      {categories.length > 0 ? (
-        categories.map((cat, index) => {
+      jobs.slice(0, 4).map((job, index) => {
 
-          const icons = ["🎨","📈","💻","⚙️","📊","🛒","📞","🏥"];
+        const isApplied = appliedJobs.includes(Number(job.Job_id));
 
-          return (
-            <div className="category-card" key={cat.Jobcat_id}>
+        return (
+          <div className="job-card" key={job.Job_id}>
 
-              <div className="icon">
-                {icons[index % icons.length]}
-              </div>
-
-              <h4>{cat.Jobcat_name}</h4>
-
-              <p>{cat.total_jobs} Jobs Available</p>
-
+            <div className="job-left">
+              <img src={images[index % images.length]} alt="logo" />
+               <div> <h4
+                          onClick={() => navigate('/browsejob', { state: { singleJobId: job.Job_id } })}
+                          style={{
+                            cursor: "pointer",
+                            color: "#007bff"
+                          }}
+                        >
+                          {job.Job_title}
+                        </h4><p>{job.Jobcat_name} | {job.location} | {job.jobtype} | {job.end_date ? new Date(job.end_date).toLocaleDateString('en-GB') : "N/A"}</p></div>
             </div>
-          );
-        })
-      ) : (
-        <p>No Categories Found</p>
-      )}
 
-    </div>
+            {isApplied ? (
+              <button className="btn-applied" disabled>
+                Applied ✅
+              </button>
+            ) : (
+              <button
+                className="btn-apply"
+                onClick={() => navigate('/browsejob', { state: { singleJobId: job.Job_id } })}
+              >
+                Apply Now
+              </button>
+            )}
+
+          </div>
+        );
+      })
+
+    ) : (
+      <p>No Jobs Found</p>
+    )}
 
   </div>
 </section>
-     {/* JOB LIST */}
-      <section className="featured-jobs-section">
-        <div className="container">
+{/* ✅ MOVE OUTSIDE MAP */}
+    <div className="About-Cta">
+      <Link to="/browsejob">
+        <button className="Btn-Secondary">Browse Jobs</button>
+      </Link>
+    </div>
 
-          <h2 className="section-title">Jobs Listing</h2>
-
-          {loading ? (
-            <p>Loading jobs...</p>
-
-          ) : jobs.length > 0 ? (
-
-            jobs.slice(0, 4).map((job, index) => (
-
+  {/* ⭐ RECOMMENDED JOBS */}
+  {userId && (
+    <section className="featured-jobs-section">
+      <div className="container">
+        <h2 className="latest">⭐ Recommended Jobs</h2>
+        {recommendedJobs.length === 0 ? (
+          <p style={{ textAlign: "center", color: "#666" }}>No matching jobs found at the moment based on your skills.</p>
+        ) : (
+          recommendedJobs.slice(0, 5).map((job, index) => {
+            const isApplied = appliedJobs.includes(Number(job.Job_id));
+            return (
               <div className="job-card" key={job.Job_id}>
-
                 <div className="job-left">
-
                   <img src={images[index % images.length]} alt="logo" />
-
                   <div>
-                    <h4>{job.Job_title}</h4>
-
+                    <h4
+                      onClick={() => navigate('/browsejob', { state: { singleJobId: job.Job_id } })}
+                      style={{ cursor: "pointer", color: "#007bff" }}
+                    >
+                      {job.Job_title}  
+                    </h4>
                     <p>
-                      {job.company_name} • {job.location} • {job.jobtype}
+                      {job.Jobcat_name} | {job.location} | {job.jobtype} |{" "}
+                      {job.end_date
+                        ? new Date(job.end_date).toLocaleDateString("en-GB")
+                        : "N/A"}
                     </p>
-
-                    <p>₹{job.salary}</p>
-                    <p>Skills :{job.skill}</p>
-                    <p>Description:{job.description}</p>
                   </div>
-
                 </div>
 
-                {/* ✅ FIXED BUTTON */}
-                {appliedJobs.includes(job.Job_id) ? (
-                  <button className="btn-applied">
+                {isApplied ? (
+                  <button className="btn-applied" disabled>
                     Applied ✅
                   </button>
                 ) : (
                   <button
                     className="btn-apply"
-                    onClick={() => applyJob(job)}
+                    onClick={() => navigate('/browsejob', { state: { singleJobId: job.Job_id } })}
                   >
                     Apply Now
                   </button>
                 )}
-
               </div>
-
-            ))
-
-          ) : (
-            <p>No Jobs Available</p>
-          )}
-
-          {/* VIEW ALL */}
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <Link to="/browsejob">
-              <button className="Bttn-Secondary">View All Jobs</button>
-            </Link>
+            );
+          })
+        )}
+      </div>
+    </section>
+  )}
+      {/* POPULAR CATEGORIES */}
+      <section className="categories-section">
+        <div className="container">
+          <h2 className="section-title">Popular Categories</h2>
+          <div className="categories-grid">
+           {displayedCategories.length > 0 ? displayedCategories.map((cat, index) => {
+              const icons = ["🎨","📈","💻","⚙️","📊","🛒","📞","🏥"];
+              return (
+                <div 
+                  className="category-card" 
+                  key={cat.Jobcat_id}
+                  onClick={() => navigate('/browsejob', { state: { categoryId: cat.Jobcat_id } })}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="icon">{icons[index % icons.length]}</div>
+                  <h4>{cat.Jobcat_name}</h4>
+                  <p>{cat.total_jobs} Jobs Available</p>
+                </div>
+              );
+            }) : <p>No Categories Found</p>}
           </div>
-
+          <div className="view-btn-container">
+        {!showAll ? (
+          <span className="View-btn" onClick={() => setShowAll(true)}>
+            View All →
+          </span>
+        ) : (
+          <span className="View-btn" onClick={() => setShowAll(false)}>
+            Show Less →
+          </span>
+        )}
+       </div>
         </div>
       </section>
-{/* TOP COMPANIES */}
-        <section className="companies-section">
+
+      {/* TOP COMPANIES */}
+<section className="companies-section">
   <div className="container">
 
     <div className="companies-header">
       <h2 className="Section-title">Top Companies</h2>
-
-      {/* ✅ React Router use karo instead of <a> */}
-      <Link to="/browsejob" className="browse-btn">
-        Browse More Jobs
-      </Link>
     </div>
 
     <div className="companies-grid">
-
-      {companies.length > 0 ? (
-        companies.slice(0, 4).map((company, index) => {
+      {activeCompanies.length > 0 ? (
+        activeCompanies.slice(0, 4).map((company, index) => {
 
           const icons = [
             "/img/svg_icon/1.svg",
             "/img/svg_icon/2.svg",
             "/img/svg_icon/3.svg",
-            "/img/svg_icon/4.svg",
-            "/img/svg_icon/5.svg",
+            "/img/svg_icon/4.svg"
           ];
 
           return (
-            <div className="company-card" key={company.Company_id}>
+            <div 
+              className="company-card" 
+              key={company.Company_id}
+              onClick={() => navigate('/browsejob', { state: { companyId: company.Company_id } })}
+              style={{ cursor: "pointer" }}
+            >
 
-              {/* ✅ Dynamic Image OR fallback icon */}
               <img
                 src={company.logo || icons[index % icons.length]}
-                alt="company"
+                alt={company.Company_name}
               />
 
+              {/* ✅ THIS IS YOUR DYNAMIC NAME */}
               <h4>{company.Company_name}</h4>
 
-              <p>
-                <span>{company.openings || 0}</span> Available positions
-              </p>
+              {/* OPTIONAL */}
+              <p>{company.location}</p>
 
             </div>
           );
@@ -327,137 +467,54 @@ const images = [
       ) : (
         <p>No Companies Found</p>
       )}
-
     </div>
 
   </div>
 </section>
 
       {/* TOP CANDIDATES */}
-     <section className="candidate-section">
-  <div className="container">
-
-    <div className="section-header">
-      <h2 className="section-title">Top Candidates</h2>
-      <p className="section-subtitle">
-        Discover skilled professionals ready to work
-      </p>
-    </div>
-
-    <div className="candidate-grid">
-
-      {candidates.length > 0 ? (
-        candidates.map((item) => (
-          <div className="candidate-card" key={item.id}>
-
-            {/* Image */}
-            <div className="candidate-img">
-              <img
-                src={item.img}
-                alt={item.name}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/img/candidates/default.png";
-                }}
-              />
-            </div>
-
-            {/* Info */}
-            <div className="candidate-info">
-              <h4>{item.name}</h4>
-              <p>{item.job}</p>
-
-              <button className="btn-view">
-                View Profile
-              </button>
-            </div>
-
+      <section className="candidate-section">
+        <div className="container">
+          <div className="section-header">
+            <h2 className="section-title">Top Candidates</h2>
+            <p className="section-subtitle">Discover skilled professionals ready to work</p>
           </div>
-        ))
-      ) : (
-        <p className="no-data">No Candidates Found</p>
-      )}
-
-    </div>
-
-  </div>
-</section>
+          <div className="candidate-grid">
+            {candidates.map(item => (
+              <div className="candidate-card" key={item.id}>
+                <div className="candidate-img">
+                  <img src={item.img} alt={item.name} onError={e => { e.target.onerror=null; e.target.src="/img/candidates/default.png";}} />
+                </div>
+                <div className="candidate-info">
+                  <h4>{item.name}</h4>
+                  <p>{item.job}</p>
+                  <button className="btn-view">View Profile</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* TESTIMONIAL AREA */}
-<section className="testimonial_area">
-  <div className="container">
-
-    <div className="section_title text-center">
-      <h3>Testimonial</h3>
-    </div>
-
-    <div className="testimonial_grid">
-
-      <div className="single_testimonial">
-        <div className="testimonial_content">
-
-          <div className="thumb">
-            <img src="/img/testmonial/author.png" alt="author" />
+      <section className="testimonial_area">
+        <div className="container">
+          <div className="section_title text-center"><h3>Testimonials</h3></div>
+          <div className="testimonial_grid">
+            {testimonials.map((item,index) => (
+              <div className="single_testimonial" key={index}>
+                <div className="testimonial_content">
+                  <div className="thumb"><img src="/img/testmonial/author.png" alt="author"/></div>
+                  <div className="info">
+                    <p>{item.text}</p>
+                    <span>- {item.author}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-
-          <div className="info">
-            <p>
-              "Working in conjunction with humanitarian aid agencies, we have
-              supported programmes to help alleviate human suffering through
-              animal welfare when people might depend on livestock as their
-              only source of income or food."
-            </p>
-            <span>- Micky Mouse</span>
-          </div>
-
         </div>
-      </div>
-
-      <div className="single_testimonial">
-        <div className="testimonial_content">
-
-          <div className="thumb">
-            <img src="/img/testmonial/author.png" alt="author" />
-          </div>
-
-          <div className="info">
-            <p>
-              "Working in conjunction with humanitarian aid agencies, we have
-              supported programmes to help alleviate human suffering through
-              animal welfare when people might depend on livestock as their
-              only source of income or food."
-            </p>
-            <span>- Micky Mouse</span>
-          </div>
-
-        </div>
-      </div>
-
-      <div className="single_testimonial">
-        <div className="testimonial_content">
-
-          <div className="thumb">
-            <img src="/img/testmonial/author.png" alt="author" />
-          </div>
-
-          <div className="info">
-            <p>
-              "Working in conjunction with humanitarian aid agencies, we have
-              supported programmes to help alleviate human suffering through
-              animal welfare when people might depend on livestock as their
-              only source of income or food."
-            </p>
-            <span>- Micky Mouse</span>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
+      </section>
 
     </>
   );

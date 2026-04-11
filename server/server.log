@@ -1,0 +1,46 @@
+Server running on http://localhost:1337
+Database Connected
+DATA: [
+  RowDataPacket {
+    id: 2,
+    company_name: 'enlighten infosystem',
+    job_title: 'Marketing Bash',
+    status: 'Shortlisted',
+    intv_date: 2026-04-10T18:30:00.000Z,
+    intv_time: '01:20:00',
+    intv_mode: 'Offline',
+    intv_location: 'Valsad'
+  },
+  RowDataPacket {
+    id: 1,
+    company_name: 'Amazon',
+    job_title: 'Support Bash',
+    status: 'Shortlisted',
+    intv_date: 2026-04-22T18:30:00.000Z,
+    intv_time: '23:25:00',
+    intv_mode: 'Offline',
+    intv_location: 'Valsad'
+  }
+]
+DATA: [
+  RowDataPacket {
+    id: 2,
+    company_name: 'enlighten infosystem',
+    job_title: 'Marketing Bash',
+    status: 'Shortlisted',
+    intv_date: 2026-04-10T18:30:00.000Z,
+    intv_time: '01:20:00',
+    intv_mode: 'Offline',
+    intv_location: 'Valsad'
+  },
+  RowDataPacket {
+    id: 1,
+    company_name: 'Amazon',
+    job_title: 'Support Bash',
+    status: 'Shortlisted',
+    intv_date: 2026-04-22T18:30:00.000Z,
+    intv_time: '23:25:00',
+    intv_mode: 'Offline',
+    intv_location: 'Valsad'
+  }
+]

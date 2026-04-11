@@ -27,11 +27,17 @@ function Signup() {
     });
   };
 
+  const [fileName, setFileName] = useState("");
+
   const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      id_proof: e.target.files[0]
-    });
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setFileName(file.name);
+      setFormData({
+        ...formData,
+        id_proof: file
+      });
+    }
   };
 
   const Addsignup = (e) => {
@@ -177,15 +183,21 @@ function Signup() {
               ></textarea>
             </div>
 
-            <div className="form-group">
-              <label>ID Proof</label>
-              <input
-                type="file"
-                name="id_proof"
-                onChange={handleFileChange}
-                required
-              />
-            </div>
+          </div>
+
+        <div className="form-group full-width">
+  <label>ID Proof</label>
+  <input
+    type="file"
+    name="id_proof"
+    onChange={handleFileChange}
+    required
+  />
+  {fileName && <p className="file-name">Selected: {fileName}</p>}
+</div>
+
+          <div className="form-grid">
+
 
             <div className="form-group">
               <label>Company Person Name</label>

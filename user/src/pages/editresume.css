@@ -1,0 +1,167 @@
+/* ===============================
+   RESET
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Poppins', sans-serif;
+}
+
+/* ===============================
+   BACKGROUND
+================================ */
+.editresume-container {
+  min-height: 100vh;
+  background: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* ===============================
+   CARD
+================================ */
+.editresume-card {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* ===============================
+   LEFT PANEL (PROFILE)
+================================ */
+.editresume-left {
+  width: 30%;
+  background: #0f172a;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  color: #fff;
+}
+
+/* FILE INPUT */
+.editresume-left input[type="file"] {
+  background: #fff;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* LEFT INPUTS */
+.editresume-left input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* ===============================
+   RIGHT PANEL
+================================ */
+.editresume-right {
+  width: 70%;
+  padding: 35px;
+  overflow-y: auto;
+}
+
+.editresume-right h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* ===============================
+   INPUT FIELDS
+================================ */
+.editresume-right input,
+.editresume-right textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 14px;
+  background: #f8fafc;
+  transition: all 0.25s ease;
+}
+
+/* TEXTAREA */
+.editresume-right textarea {
+  min-height: 80px;
+  resize: none;
+}
+
+/* FOCUS */
+.editresume-right input:focus,
+.editresume-right textarea:focus {
+  border-color: #2563eb;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ===============================
+   BUTTON
+================================ */
+.editresume-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* HOVER */
+.editresume-btn:hover {
+  background: #1e40af;
+  transform: translateY(-2px);
+}
+
+/* DISABLED */
+.editresume-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   SCROLLBAR (NICE LOOK)
+================================ */
+.editresume-right::-webkit-scrollbar {
+  width: 6px;
+}
+
+.editresume-right::-webkit-scrollbar-thumb {
+  background: #cbd5f5;
+  border-radius: 10px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+  .editresume-card {
+    flex-direction: column;
+  }
+
+  .editresume-left,
+  .editresume-right {
+    width: 100%;
+  }
+
+  .editresume-right {
+    padding: 20px;
+  }
+}

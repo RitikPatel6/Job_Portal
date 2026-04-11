@@ -38,7 +38,7 @@ function App() {
         <Routes>
 
   {/* Default Page → Login */}
-  <Route path="/" element={<Dashboard />} />
+  <Route path="/" element={<Login/>} />
 
   {/* Auth Pages */}
   <Route path="/login" element={<Login />} />

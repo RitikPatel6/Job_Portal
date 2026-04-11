@@ -1,68 +1,132 @@
 import React, { useEffect, useState } from "react";
 import "./browsejob.css";
+import { useNavigate, useLocation } from "react-router-dom";
 import Axios from "axios";
 
 function Browsejob() {
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [companyFilter, setCompanyFilter] = useState(location.state?.companyId || location.state?.searchFilters?.Company_id || null);
+  const [categoryFilter, setCategoryFilter] = useState(location.state?.categoryId || location.state?.searchFilters?.category || null);
+  const [locationFilter, setLocationFilter] = useState(location.state?.searchFilters?.location || null);
+  const [singleJobFilter, setSingleJobFilter] = useState(location.state?.singleJobId || null);
+
   const [jobs, setJobs] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(location.state?.searchFilters?.keyword || "");
+  const [userId, setUserId] = useState(null);
 
-  const user_id = 1;
+  /* ===== IMAGES ===== */
+  const images = [
+    "/img/svg_icon/1.svg",
+    "/img/svg_icon/2.svg",
+    "/img/svg_icon/3.svg",
+    "/img/svg_icon/4.svg"
+  ];
 
+  /* ===== GET USER ===== */
   useEffect(() => {
-    fetchJobs();
-    fetchAppliedJobs();
+    const data = sessionStorage.getItem("userData");
+    if (data) {
+      const user = JSON.parse(data);
+      setUserId(user?.id);
+    }
   }, []);
 
-  // ================= FETCH JOBS =================
+  /* ===== FETCH JOBS ===== */
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
   const fetchJobs = async () => {
     try {
       setLoading(true);
+
       const res = await Axios.get("http://localhost:1337/api/joblist");
-      setJobs(res.data || []);
+
+      console.log("JOB LIST:", res.data); // DEBUG
+
+      let jobList = [];
+      if (Array.isArray(res.data)) {
+        jobList = res.data;
+      } else if (res.data.success) {
+        jobList = res.data.data;
+      }
+
+      const today = new Date();
+      const activeJobs = jobList.filter(job => {
+        if (!job.end_date) return true;
+        const endDate = new Date(job.end_date);
+        endDate.setHours(23, 59, 59, 999);
+        return today <= endDate;
+      });
+
+      setJobs(activeJobs);
+
     } catch (err) {
-      console.log(err);
+      console.log("ERROR:", err);
+      setJobs([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // ================= FETCH APPLIED =================
+  /* ===== FETCH APPLIED JOBS ===== */
+  useEffect(() => {
+    if (userId) fetchAppliedJobs();
+  }, [userId]);
+
   const fetchAppliedJobs = async () => {
     try {
       const res = await Axios.get(
-        `http://localhost:1337/api/applied/${user_id}`
+        `http://localhost:1337/api/applied/${userId}`
       );
 
-      const ids = res.data.map(
-        (job) => job.Job_id || job.job_id
-      );
+      const data = res.data.data || res.data || [];
+
+      const ids = data.map((item) => Number(item.Job_id));
 
       setAppliedJobs(ids);
+
     } catch (err) {
       console.log(err);
     }
   };
 
-  // ================= APPLY =================
+  /* ===== APPLY JOB ===== */
   const applyJob = async (job) => {
+
+    if (!userId) {
+      alert("Please login first ❌");
+      navigate("/login");
+      return;
+    }
+
     try {
       const res = await Axios.post(
         "http://localhost:1337/api/apply",
         {
-          job_id: job.Job_id,
-          user_id: user_id,
-          company_id: job.Company_id || 1
+          Job_id: job.Job_id,
+          User_id: userId,
+          Company_id: job.Company_id,
+          description: job.description
         }
       );
 
       if (res.data.success) {
+
         alert("Applied Successfully ✅");
-        setAppliedJobs((prev) => [...prev, job.Job_id]);
+
+        setAppliedJobs(prev =>
+          prev.includes(Number(job.Job_id))
+            ? prev
+            : [...prev, Number(job.Job_id)]
+        );
+
       } else {
-        alert("Already Applied ❌");
+        alert(res.data.message);
       }
 
     } catch (err) {
@@ -71,104 +135,130 @@ function Browsejob() {
     }
   };
 
-  // ================= FILTER =================
-  const filteredJobs = jobs.filter((job) =>
-    job.Job_title?.toLowerCase().includes(search.toLowerCase()) ||
-    job.skill?.toLowerCase().includes(search.toLowerCase())
-  );
+  /* ===== FILTER ===== */
+  const filteredJobs = jobs.filter((job) => {
+    let matchCompany = true;
+    if (companyFilter) {
+      matchCompany = Number(job.Company_id) === Number(companyFilter);
+    }
+    
+    let matchCategory = true;
+    if (categoryFilter) {
+      matchCategory = Number(job.Jobcat_id) === Number(categoryFilter);
+    }
 
-  const images = [
-    "/img/svg_icon/1.svg",
-    "/img/svg_icon/2.svg",
-    "/img/svg_icon/3.svg",
-    "/img/svg_icon/4.svg"
-  ];
+    let matchLocation = true;
+    if (locationFilter) {
+      matchLocation = job.location === locationFilter;
+    }
 
+    let matchSingleJob = true;
+    if (singleJobFilter) {
+      matchSingleJob = Number(job.Job_id) === Number(singleJobFilter);
+    }
+
+    const matchSearch =
+      job.Job_title?.toLowerCase().includes(search.toLowerCase()) ||
+      job.skill?.toLowerCase().includes(search.toLowerCase());
+
+    return matchCompany && matchCategory && matchLocation && matchSearch && matchSingleJob;
+  });
+
+  /* ===== UI ===== */
   return (
-    <div className="browsejob-page">
+    <div>
 
-      {/* Banner */}
-      <section className="browsejob-banner">
-        <h1>{filteredJobs.length}+ Jobs Available</h1>
-      </section>
+      {/* ===== BANNER ===== */}
+      <div className="browsejob-banner">
+        <h1>Find Your Dream Job</h1>
+        <p>{filteredJobs.length} Jobs Available</p>
+      </div>
 
       <div className="container browsejob-container">
 
-        {/* Sidebar */}
-        <aside className="filter-sidebar">
-          <h3>Filter Jobs</h3>
+        {/* ===== SIDEBAR ===== */}
+        <div className="filter-sidebar">
+          <h3>Search Jobs</h3>
 
           <input
             type="text"
-            placeholder="Search job or skill"
+            placeholder="Search by title or skill"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-        </aside>
 
-        {/* Jobs */}
-        <section className="job-listing">
-          <h2>Job Listings</h2>
+          <button
+            className="btn-reset"
+            onClick={() => {
+              setSearch("");
+              setCompanyFilter(null);
+              setCategoryFilter(null);
+              setLocationFilter(null);
+              setSingleJobFilter(null);
+            }}
+          >
+            Reset
+          </button>
+        </div>
 
-          <div className="job-cards">
+        {/* ===== JOB LIST ===== */}
+        <div className="job-listing">
 
-            {loading ? (
-              <p>Loading jobs...</p>
-            ) : filteredJobs.length > 0 ? (
+          <div className="job-listing-header">
+            <h2 className="Available">Available Jobs</h2>
+          </div>
 
-              filteredJobs.map((job, index) => {
+          {loading ? (
+            <p>Loading...</p>
+          ) : filteredJobs.length > 0 ? (
 
-                const isApplied = appliedJobs.includes(job.Job_id);
+            <div className="job-cards">
+
+              {filteredJobs.map((job, index) => {
+
+                const isApplied = appliedJobs.includes(Number(job.Job_id));
 
                 return (
-                  <div className="job-card" key={job.Job_id}>
+                  <div key={job.Job_id} className="job-card">
 
-                    {/* LEFT */}
+                    {/* LEFT SIDE */}
                     <div className="job-card-left">
-
                       <img
                         src={images[index % images.length]}
-                        alt="logo"
-                        className="job-img"
+                        alt="company"
                       />
 
-                      <div className="job-info">
-
-                        <h4>{job.Job_title}</h4>
+                      <div>
+                        {/* ✅ CLICK ONLY TITLE */}
+                        <h4
+                          onClick={() => navigate(`/jobdetails/${job.Job_id}`)}
+                          style={{
+                            cursor: "pointer",
+                            color: "#007bff"
+                          }}
+                        >
+                          {job.Job_title}
+                        </h4>
 
                         <p>
-                          {job.location} • {job.jobtype} • ₹{job.salary}
+                          {job.Jobcat_name} | {job.location} | {job.jobtype} | {job.end_date ? new Date(job.end_date).toLocaleDateString('en-GB') : "N/A"}
                         </p>
-
-                        <p>
-                          <strong>Skills:</strong> {job.skill || "N/A"}
-                        </p>
-
-                        {job.Jobcat_description && (
-                          <p className="job-category">
-                            {job.Jobcat_description}
-                          </p>
-                        )}
-
-                        {job.description && (
-                          <p className="job-desc">
-                            <strong>Description:</strong> {job.description}
-                          </p>
-                        )}
-
                       </div>
                     </div>
 
-                    {/* RIGHT */}
-                    <div className="job-card-right">
+                    {/* RIGHT SIDE */}
+                    <div>
                       {isApplied ? (
-                        <button className="btn-applied">
+                        <button className="btn-applied" disabled>
                           Applied ✅
                         </button>
                       ) : (
                         <button
                           className="btn-apply"
-                          onClick={() => applyJob(job)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            applyJob(job);
+                          }}
                         >
                           Apply Now
                         </button>
@@ -177,14 +267,15 @@ function Browsejob() {
 
                   </div>
                 );
-              })
+              })}
 
-            ) : (
-              <p>No Jobs Found</p>
-            )}
+            </div>
 
-          </div>
-        </section>
+          ) : (
+            <p>No Jobs Found ❌</p>
+          )}
+
+        </div>
 
       </div>
     </div>

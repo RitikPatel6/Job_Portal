@@ -141,3 +141,35 @@
   font-style: italic;
   font-size: 14px;
 }
+/* Description container */
+.desc-container {
+  position: relative;
+  max-width: 250px; /* adjust width as needed */
+}
+
+/* Description text: 2-line clamp */
+.desc-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* show 2 lines by default */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  line-height: 1.3rem;
+}
+
+/* When expanded, show full text */
+.desc-text.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  white-space: normal;
+}
+
+/* Toggle arrow */
+.toggle-desc {
+  cursor: pointer;
+  font-weight: bold;
+  color: #3b82f6;
+  margin-left: 5px;
+  user-select: none;
+}

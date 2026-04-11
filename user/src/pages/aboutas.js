@@ -52,7 +52,7 @@ function Aboutas() {
     <div className="about-page">
 
       {/* Banner */}
-      <section className="about-banner">
+      <section className="About-Banner">
         <h1>About Our Job Portal</h1>
         <p>Connecting talent with opportunity</p>
       </section>

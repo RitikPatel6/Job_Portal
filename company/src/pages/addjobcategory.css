@@ -1,74 +1,60 @@
-/* ===============================
-   ADD JOB CATEGORY PAGE
-================================ */
-
-/* Page spacing */
-.container {
-  margin-top: 60px !important;
+.category-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  background: #f4f6f9;
 }
 
-/* Card Styling */
-.card {
-  max-width: 600px;
-  margin: auto;
-  border-radius: 10px;
-  border: none;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  background-color: #ffffff;
+.category-card {
+  background: #fff;
+  padding: 30px;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
 }
 
-/* Title */
-.card h3 {
-  font-weight: 600;
-  color: #1e3a8a;
+.category-card h2 {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
+  color: #333;
 }
 
-/* Labels */
-.form-label {
-  font-weight: 500;
-  margin-bottom: 6px;
-  color: #374151;
+.category-card label {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #444;
 }
 
-/* Inputs & Textarea */
-.form-control {
-  border-radius: 6px;
+.category-card input,
+.category-card textarea {
+  margin-top: 5px;
   padding: 10px;
-  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
   font-size: 14px;
-  transition: all 0.3s ease;
 }
 
-/* Focus effect */
-.form-control:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.2);
+.category-card input:focus,
+.category-card textarea:focus {
+  border-color: #4a90e2;
 }
 
-/* Button Styling */
-.btn-success {
-  width: 100%;
-  padding: 10px;
-  font-size: 15px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  background-color: #4279f0;
+.category-card button {
+  margin-top: 20px;
+  padding: 12px;
+  border: none;
+  background: #4a90e2;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* Button Hover */
-.btn-success:hover {
-  background-color: #2563eb!important;
-  transform: translateY(-1px);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .card {
-    padding: 20px !important;
-  }
-}
-.btn.btn-success{
-  height: 40px;
+.category-card button:hover {
+  background: #357bd8;
 }

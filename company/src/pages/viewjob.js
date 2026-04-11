@@ -18,14 +18,17 @@ function Viewjob() {
 
   // GET DATA
   useEffect(() => {
-  Axios.get("http://localhost:1337/api/jobcategories")
-    .then((response) => {
-      setList(response.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}, []);   // IMPORTANT
+    const companyData = JSON.parse(sessionStorage.getItem("company"));
+    if (companyData && companyData.Company_id) {
+      Axios.get(`http://localhost:1337/api/jobcategories?Company_id=${companyData.Company_id}`)
+        .then((response) => {
+          setList(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);   // IMPORTANT
 
   return (
     <div className="job-container">

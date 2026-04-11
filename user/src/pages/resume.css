@@ -109,3 +109,23 @@
 .download-btn:hover {
   background-color: #e85b20;
 }
+.edit-btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background-color: #3082f5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: 0.3s;
+  margin: 10px;
+  
+}
+
+.edit-btn:hover {
+  background-color: #1c53f8;
+ 
+}

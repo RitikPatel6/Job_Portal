@@ -1,100 +1,187 @@
-/* ===============================
-   MONITORING JOB SEEKER PAGE
-================================ */
+/* monitoringjobseeker.css */
 
-.candidate-container {
-  padding: 40px;
-  background-color: #f4f6f9;
-  min-height: 100vh;
-}
-
-.candidate-card {
-  background: #ffffff;
+/* ===== Container ===== */
+.monitoring-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f9fafb;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.candidate-header {
-  background-color: #84878a;
-  color: white;
-  padding: 16px 20px;
-  font-size: 18px;
-  font-weight: 600;
+/* ===== Header ===== */
+.monitoring-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.candidate-table-wrapper {
+.monitoring-header h2 {
+  font-size: 1.8rem;
+  color: #1f2937;
+}
+
+/* ===== Search Box ===== */
+.search-box input {
+  padding: 8px 12px;
+  width: 250px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+  border-color: #3b82f6;
+}
+
+/* ===== Table Wrapper ===== */
+.table-wrapper {
   overflow-x: auto;
 }
 
-.candidate-table {
+.candidates-table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.candidate-table th {
-  background-color: #2563eb;
-  color: white;
-  padding: 14px;
+.candidates-table th,
+.candidates-table td {
+  padding: 12px 15px;
   text-align: left;
+  font-size: 0.95rem;
+}
+
+.candidates-table thead {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.candidates-table th {
   font-weight: 600;
 }
 
-.candidate-table td {
-  padding: 14px;
-  border-bottom: 1px solid #eee;
+.candidates-table tbody tr:nth-child(even) {
+  background-color: #f3f4f6;
 }
 
-.candidate-table tr:hover {
-  background-color: #f9fafb;
-}
-
-.action-column {
-  width: 150px;
-}
-
-/* Status Styles */
-.status {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  cursor: pointer;
-  color: white;
-}
-
-.status.applied {
-  background-color: #0d6efd;
-}
-
-.status.interview {
-  background-color: #ffc107;
-  color: black;
-}
-
-.status.selected {
-  background-color: #198754;
-}
-
-.status.rejected {
-  background-color: #dc3545;
-}
-
-/* Button */
-.btn-delete {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.btn-delete:hover {
-  background-color: #bb2d3b;
-}
-
+/* ===== No Data Row ===== */
 .no-data {
   text-align: center;
-  padding: 20px;
-  color: #6c757d;
+  padding: 20px 0;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ===== Status Badge ===== */
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #ffffff;
+  text-align: center;
+  min-width: 70px;
+}
+
+/* Active / Blocked colors */
+.status-badge.active {
+  background-color: #10b981; /* green */
+}
+
+.status-badge.blocked {
+  background-color: #ef4444; /* red */
+}
+
+/* ===== Toggle Button ===== */
+.btn-toggle {
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #ffffff;
+}
+
+.btn-toggle.block {
+  background-color: #ef4444;
+}
+
+.btn-toggle.block:hover {
+  background-color: #dc2626;
+}
+
+.btn-toggle.unblock {
+  background-color: #10b981;
+}
+
+.btn-toggle.unblock:hover {
+  background-color: #059669;
+}
+
+/* ===== Loading Text ===== */
+.loading-text {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #3b82f6;
+  padding: 30px 0;
+}
+
+/* ===== Admin Table Header ===== */
+.candidates-table th.admin {
+  background-color: #3b82f6;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 0.95rem;
+  border-bottom: 2px solid #2563eb;
+}
+
+.candidates-table th.admin:hover {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* ===== Expandable Skills Column ===== */
+.desc-container {
+  position: relative;
+  max-width: 200px;
+}
+
+.desc-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* show only 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.desc-text.expanded {
+  display: block;
+  -webkit-line-clamp: unset;
+  white-space: normal;
+}
+
+.toggle-desc {
+  cursor: pointer;
+  font-weight: bold;
+  color: #3b82f6;
+  margin-left: 5px;
+  user-select: none;
 }

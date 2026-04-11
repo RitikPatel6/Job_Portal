@@ -1,165 +1,151 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Axios from "axios";
 import "./managecandidates.css";
 
 function ManageCandidates() {
-  const [candidates, setCandidates] = useState([
-    {
-      id: 1,
-      name: "Amit Sharma",
-      email: "amit@gmail.com",
-      job: "React Developer",
-      status: "Pending",
-    },
-  ]);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    job: "",
-    status: "Pending",
-  });
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [companyId, setCompanyId] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  /* ===== GET COMPANY FROM SESSION ===== */
+  useEffect(() => {
+    const data = sessionStorage.getItem("company");
+
+    if (data) {
+      const company = JSON.parse(data);
+
+      // ✅ handle both Company_id and id
+      const id = company?.Company_id || company?.id;
+
+      console.log("Company Data:", company);
+      console.log("Company ID:", id);
+
+      setCompanyId(id);
+    }
+  }, []);
+
+  /* ===== FETCH ALL CANDIDATES ===== */
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
+
+  const fetchCandidates = async () => {
+    try {
+      setLoading(true);
+
+      const res = await Axios.get(
+        "http://localhost:1337/api/manage-candidates"
+      );
+
+      console.log("API Data:", res.data);
+
+      if (res.data.success) {
+        setCandidates(res.data.data);
+      } else {
+        setCandidates([]);
+      }
+
+    } catch (err) {
+      console.log("Error:", err);
+      setCandidates([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const newCandidate = {
-      id: candidates.length + 1,
-      ...formData,
-    };
-
-    setCandidates([...candidates, newCandidate]);
-
-    setFormData({
-      name: "",
-      email: "",
-      job: "",
-      status: "Pending",
-    });
-  };
-
-  const updateStatus = (id, status) => {
-    const updated = candidates.map((candidate) =>
-      candidate.id === id ? { ...candidate, status } : candidate
+  /* ===== UPDATE STATUS ===== */
+  const updateStatus = async (id, status) => {
+    await Axios.put(
+      `http://localhost:1337/api/update-status/${id}`,
+      { status }
     );
-    setCandidates(updated);
+    fetchCandidates();
   };
 
-  const deleteCandidate = (id) => {
-    setCandidates(candidates.filter((c) => c.id !== id));
+  /* ===== DELETE ===== */
+  const deleteCandidate = async (id) => {
+    await Axios.delete(
+      `http://localhost:1337/api/delete-application/${id}`
+    );
+    fetchCandidates();
   };
+
+  /* ===== FILTER BY COMPANY ===== */
+  const filteredCandidates = candidates.filter(
+    (c) => Number(c.Company_id) === Number(companyId)
+  );
 
   return (
-    <div className="managecandidates-page">
-      <h2>Manage Candidates</h2>
+    <div className="manage-page">
+      <h2 className="manage-title">Manage Candidates</h2>
 
-      {/* Add Candidate Form */}
-      <div className="form-card">
-        <h3>Add Candidate</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="form-grid">
-            <input
-              type="text"
-              name="name"
-              placeholder="Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-
-            <input
-              type="text"
-              name="job"
-              placeholder="Job"
-              value={formData.job}
-              onChange={handleChange}
-              required
-            />
-
-            <select
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-            >
-              <option>Pending</option>
-              <option>Shortlisted</option>
-              <option>Rejected</option>
-            </select>
-          </div>
-
-          <button type="submit" className="submit-btn">
-            Add Candidate
-          </button>
-        </form>
-      </div>
-
-      {/* Candidate Table */}
-      <div className="table-card">
-        <h3>Candidate List</h3>
-
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Job</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {candidates.map((c) => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.name}</td>
-                <td>{c.email}</td>
-                <td>{c.job}</td>
-                <td>
-                  <span className={`status ${c.status.toLowerCase()}`}>
-                    {c.status}
-                  </span>
-                </td>
-                <td>
-                  <button
-                    className="btn-shortlist"
-                    onClick={() => updateStatus(c.id, "Shortlisted")}
-                  >
-                    Shortlist
-                  </button>
-
-                  <button
-                    className="btn-reject"
-                    onClick={() => updateStatus(c.id, "Rejected")}
-                  >
-                    Reject
-                  </button>
-
-                  <button
-                    className="btn-delete"
-                    onClick={() => deleteCandidate(c.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
+      {loading ? (
+        <p className="loading-text">Loading...</p>
+      ) : (
+        <div className="table-wrapper">
+          <table className="candidate-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Job</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody>
+              {filteredCandidates.length > 0 ? (
+                filteredCandidates.map((c, index) => (
+                  <tr key={c.id}>
+                    <td>{index + 1}</td>
+                    <td>{c.name}</td>
+                    <td>{c.email}</td>
+                    <td>{c.Job_title}</td>
+
+                    <td>
+                      <span className={`status ${c.status}`}>
+                        {c.status}
+                      </span>
+                    </td>
+
+                    <td>
+                      <button
+                        className="btn shortlist"
+                        onClick={() => updateStatus(c.id, "Shortlisted")}
+                      >
+                        Shortlist
+                      </button>
+
+                      <button
+                        className="btn reject"
+                        onClick={() => updateStatus(c.id, "Rejected")}
+                      >
+                        Reject
+                      </button>
+
+                      <button
+                        className="btn delete"
+                        onClick={() => deleteCandidate(c.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="no-data">
+                    No Candidates Found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

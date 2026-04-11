@@ -1,103 +1,114 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./dashboard.css";
 
 function Dashboard() {
-  const navigate = useNavigate();
+  const [stats, setStats] = useState({
+    totalJobs: 0,
+    totalApplications: 0,
+    shortlisted: 0,
+    rejected: 0
+  });
+
+  const [recent, setRecent] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const company = JSON.parse(sessionStorage.getItem("company") || "{}");
+  const companyId = company.Company_id || company.id;
+
+  useEffect(() => {
+    if (!companyId) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const statsRes = await axios.get(
+          `http://localhost:1337/api/companyDashboard/${companyId}`
+        );
+        const recentRes = await axios.get(
+          `http://localhost:1337/api/recentApplications/${companyId}`
+        );
+
+        setStats({
+          totalJobs: statsRes.data?.totalJobs || 0,
+          totalApplications: statsRes.data?.totalApplications || 0,
+          shortlisted: statsRes.data?.shortlisted || 0,
+          rejected: statsRes.data?.rejected || 0
+        });
+
+        setRecent(recentRes.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [companyId]);
+
+  if (!companyId) {
+    return <div className="dashboard-message">Please Login First</div>;
+  }
+
+  if (loading) {
+    return <div className="dashboard-message">Loading...</div>;
+  }
+
   return (
-    <div className="job-container">
+    <div className="dashboard">
+      <h1 className="dashboard-title">Company Dashboard</h1>
 
-      <div className="job-card">
-
-        <div className="job-header">
-          Dashboard Overview
+      {/* ===== KPI CARDS ===== */}
+      <div className="dashboard-cards">
+        <div className="kpi-card kpi-indigo">
+          <h3>Total Jobs</h3>
+          <p>{stats.totalJobs}</p>
         </div>
-
-        <div className="dashboard-content">
-
-          {/* Welcome Section */}
-          <div className="welcome-box">
-            <h3>Welcome Back, Ritik 👋</h3>
-            <p>Here is what’s happening with your job portal today.</p>
-          </div>
-
-          {/* Stats Section */}
-          <div className="dashboard-stats">
-
-            <div className="stat-card blue">
-              <h4>Total Jobs</h4>
-              <p>18</p>
-            </div>
-
-            <div className="stat-card green">
-              <h4>Active Jobs</h4>
-              <p>12</p>
-            </div>
-
-            <div className="stat-card orange">
-              <h4>Total Applications</h4>
-              <p>56</p>
-            </div>
-
-            <div className="stat-card purple">
-              <h4>Interviews Scheduled</h4>
-              <p>7</p>
-            </div>
-
-          </div>
-
-          {/* Recent Jobs Table */}
-          <div className="recent-table-card">
-            <h3>Recent Jobs</h3>
-
-            <table className="recent-table">
-              <thead>
-                <tr>
-                  <th>Job Title</th>
-                  <th>Category</th>
-                  <th>Location</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td>React Developer</td>
-                  <td>IT</td>
-                  <td>Remote</td>
-                  <td><span className="status active">Active</span></td>
-                </tr>
-
-                <tr>
-                  <td>HR Executive</td>
-                  <td>HR</td>
-                  <td>Mumbai</td>
-                  <td><span className="status inactive">Inactive</span></td>
-                </tr>
-              </tbody>
-
-            </table>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="quick-actions">
-        <button 
-        className="action-btn"
-        onClick={() => navigate("/viewjob")}
-        >
-        View Job
-      </button>
-
-      <button className="action-btn outline"
-      onClick={() => navigate("/viewemployer")}>
-      Manage Employer
-   </button>
-</div>
+        <div className="kpi-card kpi-blue">
+          <h3>Applications</h3>
+          <p>{stats.totalApplications}</p>
         </div>
-
+        <div className="kpi-card kpi-green">
+          <h3>Shortlisted</h3>
+          <p>{stats.shortlisted}</p>
+        </div>
+        <div className="kpi-card kpi-red">
+          <h3>Rejected</h3>
+          <p>{stats.rejected}</p>
+        </div>
       </div>
 
+      {/* ===== RECENT APPLICATIONS TABLE ===== */}
+      <h2 className="dashboard-subtitle">Recent Applications</h2>
+      <table className="applications-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Job</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recent.length === 0 ? (
+            <tr>
+              <td colSpan="3" className="no-data">No Data</td>
+            </tr>
+          ) : (
+            recent.map((item, i) => (
+              <tr key={i}>
+                <td>{item.Name}</td>
+                <td>{item.job_title}</td>
+                <td className={`status-badge ${item.Status?.toLowerCase()}`}>
+                  {item.Status}
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }

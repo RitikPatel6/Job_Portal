@@ -1,104 +1,64 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import "./dashboard.css";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 function Dashboard() {
-  const navigate = useNavigate();
+  const [data, setData] = useState({ totalCompanies: 0, totalJobs: 0, totalApplications: 0, totalInterviews: 0 });
+  const [loading, setLoading] = useState(true);
+  const isMounted = useRef(true);
+
+  const admin = JSON.parse(sessionStorage.getItem("admin") || "{}");
+
+  useEffect(() => {
+    isMounted.current = true;
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:1337/api/adminDashboard");
+        if (isMounted.current) setData(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (isMounted.current) setLoading(false);
+      }
+    };
+    fetchData();
+    return () => { isMounted.current = false; };
+  }, []);
+
+  if (loading) return <p style={{ textAlign: "center" }}>Loading Dashboard...</p>;
+
+  const chartData = {
+    labels: ["Companies", "Jobs", "Applications", "Interviews"],
+    datasets: [{
+      label: "Metrics",
+      data: [data.totalCompanies, data.totalJobs, data.totalApplications, data.totalInterviews],
+      backgroundColor: ["#6366f1", "#3b82f6", "#10b981", "#f59e0b"],
+      borderRadius: 8
+    }]
+  };
+
+  const options = { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } };
 
   return (
-    <div className="job-container">
+    <div className="dashboard-container">
+      <h1>Admin Dashboard</h1>
+      <p style={{ textAlign: "center" }}>Welcome, {admin.admin_name || "Admin"}</p>
 
-      <div className="job-card">
-
-        <div className="job-header">
-          Dashboard Overview
-        </div>
-
-        <div className="dashboard-content">
-
-          {/* Welcome Section */}
-          <div className="welcome-box">
-            <h3>Welcome Back, Ritik 👋</h3>
-            <p>Here is what’s happening with your job portal today.</p>
-          </div>
-
-          {/* Stats Section */}
-          <div className="dashboard-stats">
-
-            <div className="stat-card blue">
-              <h4>Total Jobs</h4>
-              <p>18</p>
-            </div>
-
-            <div className="stat-card green">
-              <h4>Active Jobs</h4>
-              <p>12</p>
-            </div>
-
-            <div className="stat-card orange">
-              <h4>Total Applications</h4>
-              <p>56</p>
-            </div>
-
-            <div className="stat-card purple">
-              <h4>Interviews Scheduled</h4>
-              <p>7</p>
-            </div>
-
-          </div>
-
-          {/* Recent Jobs Table */}
-          <div className="recent-table-card">
-            <h3>Recent Jobs</h3>
-
-            <table className="recent-table">
-              <thead>
-                <tr>
-                  <th>Job Title</th>
-                  <th>Category</th>
-                  <th>Location</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td>React Developer</td>
-                  <td>IT</td>
-                  <td>Remote</td>
-                  <td><span className="status active">Active</span></td>
-                </tr>
-
-                <tr>
-                  <td>HR Executive</td>
-                  <td>HR</td>
-                  <td>Mumbai</td>
-                  <td><span className="status inactive">Inactive</span></td>
-                </tr>
-              </tbody>
-
-            </table>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="quick-actions">
-        <button 
-        className="action-btn"
-        onClick={() => navigate("/viewjob")}
-        >
-        View Job
-      </button>
-
-      <button className="action-btn outline"
-      onClick={() => navigate("/viewemployer")}>
-      Manage Employer
-   </button>
-</div>
-        </div>
-
+      <div className="dashboard-cards">
+        <div className="card"><h3>Companies</h3><p>{data.totalCompanies}</p></div>
+        <div className="card"><h3>Jobs</h3><p>{data.totalJobs}</p></div>
+        <div className="card"><h3>Applications</h3><p>{data.totalApplications}</p></div>
+        <div className="card"><h3>Interviews</h3><p>{data.totalInterviews}</p></div>
       </div>
 
+      <div className="chart-section">
+        <h2>Platform Metrics</h2>
+        <Bar data={chartData} options={options} />
+      </div>
     </div>
   );
 }

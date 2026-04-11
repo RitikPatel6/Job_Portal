@@ -1,28 +1,56 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./header.css";
 
 function Header() {
+
+  const [admin, setAdmin] = useState(null);
+  const navigate = useNavigate();
+
+  // ✅ CHECK SESSION
+  useEffect(() => {
+    const adminData = sessionStorage.getItem("admin");
+
+    if (adminData) {
+      setAdmin(JSON.parse(adminData));
+    }
+  }, []);
+
+  // ✅ LOGOUT FUNCTION
+  const handleLogout = () => {
+    sessionStorage.removeItem("admin");
+    setAdmin(null);
+    navigate("/login");
+  };
+
   return (
     <header className="main-header">
       <div className="header-container">
-        
-        {/* Logo Section */}
+
+        {/* Logo */}
         <div className="logo-section">
-          <p to="/" className="logo">
+          <p className="logo">
             <span className="logo-primary">Job</span>Portal
           </p>
         </div>
 
-        {/* Right Menu */}
+        {/* MENU */}
         <div className="header-menu">
-          <Link to="/login" className="header-link">
-            Login
-          </Link>
 
-          <Link to="/login" className="header-link logout-btn">
-           Logout <i className="icon-logout"></i> 
-          </Link>
+          {/* 🔥 IF NOT LOGGED IN */}
+          {!admin && (
+            <Link to="/login" className="header-link">
+              Login
+            </Link>
+          )}
+
+          {/* 🔥 IF LOGGED IN */}
+          {admin && (
+            <button className="header-link logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          )}
+
         </div>
 
       </div>
