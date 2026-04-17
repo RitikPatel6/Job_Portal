@@ -84,6 +84,18 @@ function Viewjob() {
     return new Date(date).toLocaleDateString("en-GB");
   };
 
+    const getStatus = (endDate) => {
+    if (!endDate) return <span className="status-active">Active</span>;
+    const today = new Date();
+    const jobEndDate = new Date(endDate);
+    jobEndDate.setHours(23, 59, 59, 999);
+
+    if (today > jobEndDate) {
+      return <span className="status-closed">Closed</span>;
+    }
+    return <span className="status-active">Active</span>;
+  };
+
   return (
     <div className="job-container">
 
@@ -106,7 +118,7 @@ function Viewjob() {
                 <th>End Date</th>
                 <th>Skills</th>
                 <th>Description</th>
-                <th>Action</th>
+                <th>Status</th>
               </tr>
             </thead>
 
@@ -140,13 +152,8 @@ function Viewjob() {
                       <ExpandableText text={job.description} />
                     </td>
 
-                    <td>
-                      <button
-                        className="btn-delete"
-                        onClick={() => deleteJob(job.Job_id)}
-                      >
-                        Delete
-                      </button>
+                    <td style={{ textAlign: "center" }}>
+                      {getStatus(job.end_date)}
                     </td>
                   </tr>
                 ))

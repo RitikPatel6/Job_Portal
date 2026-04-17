@@ -12,7 +12,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 app.get("/debug-check", (req, res) => {
-  res.json({ message: "Antigravity Server v2 Running", time: new Date() });
+  res.json({ message: "Antigravity Server v2.1 Running", time: new Date() });
 });
 
 app.get("/api/test-rec", (req, res) => {
@@ -22,64 +22,134 @@ app.get("/api/test-rec", (req, res) => {
 // Recommended Jobs based on User Skills
 app.get("/api/recommended-jobs/:userId", (req, res) => {
   const userId = req.params.userId;
-  console.log("-> Recommended Jobs Request for User:", userId);
 
   // 1. Get User Skills
   const userSql = "SELECT Skills FROM job_seeker WHERE id = ?";
   db.query(userSql, [userId], (err, userResult) => {
     if (err) {
-        console.log("   - DB Error fetching user skills:", err);
-        return res.json({ success: false, data: [] });
+      return res.json({ success: false, data: [] });
     }
     if (userResult.length === 0) {
-      console.log("   - User not found in job_seeker table");
       return res.json({ success: false, data: [] });
     }
 
     const userSkills = userResult[0].Skills || "";
-    console.log("   - User Skills found:", userSkills);
-    
+
+
     if (!userSkills.trim()) {
       return res.json({ success: true, data: [] });
     }
 
-    // Split skills by comma and clean them
-    const skillsList = userSkills
-      .split(",")
-      .map(s => s.trim().replace(/[()]/g, "")) // Remove parentheses
-      .filter(s => s.length > 1); // Ignore single characters or empty
+    // Improved skill extraction: handles nested skills, quotes, and varied separators
+    let processedSkills = userSkills
+      .replace(/[()""“”'']/g, ",") // Remove parentheses and various types of quotes
+      .split(/[,\n.]/)             // Split by comma, newline, or period
+      .map(s => s.trim())
+      .filter(s => s.length > 0);
 
-    console.log("   - Cleaned Skills List:", skillsList);
+    // Helper to escape special regex characters for MySQL REGEXP
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\\\$&");
 
-    if (skillsList.length === 0) {
+    // 2. Search for jobs matching any of these skills
+    // Calculate a 'match_count' using weights (phrases get 50 points, keywords get 10 points)
+    const scoreParts = [];
+    const searchTerms = [];
+
+    // We'll give high weights to the full phrases from the user
+    processedSkills.forEach((phrase) => {
+      const cleanPhrase = phrase.replace(/^[^a-zA-Z0-9#+]+|[^a-zA-Z0-9#+]+$/g, "");
+      if (cleanPhrase) {
+        // Use custom boundaries that allow # and + (for C++, C#)
+        scoreParts.push("(CASE WHEN j.skill REGEXP ? THEN 50 ELSE 0 END)");
+        const escaped = escapeRegex(cleanPhrase);
+        searchTerms.push(`(^|[^a-zA-Z0-9#+])${escaped}($|[^a-zA-Z0-9#+])`);
+      }
+    });
+
+    // Add individual keywords with better weight
+    const keywords = [];
+    processedSkills.forEach(phrase => {
+      const words = phrase.split(/\s+/)
+        .map(w => w.replace(/[^a-zA-Z0-9#+]/g, "").trim())
+        .filter(w => w.length > 3);
+
+      words.forEach(word => {
+        if (word && !keywords.includes(word) && !processedSkills.includes(word)) {
+          keywords.push(word);
+        }
+      });
+    });
+
+    keywords.forEach((word) => {
+      scoreParts.push("(CASE WHEN j.skill REGEXP ? THEN 10 ELSE 0 END)");
+      const escaped = escapeRegex(word);
+      searchTerms.push(`(^|[^a-zA-Z0-9#+])${escaped}($|[^a-zA-Z0-9#+])`);
+    });
+
+    if (scoreParts.length === 0) {
       return res.json({ success: true, data: [] });
     }
 
-    // 2. Search for jobs matching any of these skills
+    const matchScoreSql = scoreParts.join(" + ");
+
     let jobSql = `
-      SELECT j.*, c.Jobcat_name, comp.Company_name 
+      SELECT j.*, c.Jobcat_name, comp.Company_name, 
+             (${matchScoreSql}) AS match_count
       FROM job j
       LEFT JOIN job_category c ON j.Jobcat_id = c.Jobcat_id
       LEFT JOIN company comp ON j.Company_id = comp.Company_id
-      WHERE (
-    `;
-    const searchTerms = [];
-    skillsList.forEach((skill, index) => {
-      jobSql += `j.skill LIKE ? ${index < skillsList.length - 1 ? "OR " : ""}`;
-      searchTerms.push(`%${skill}%`);
-    });
-    jobSql += `) 
-      AND (j.end_date >= CURDATE() OR j.end_date IS NULL OR j.end_date = '')
-      ORDER BY j.Job_id DESC LIMIT 10`;
+      WHERE (j.end_date >= CURDATE() OR j.end_date IS NULL OR j.end_date = '')
+      HAVING match_count >= 20
+      ORDER BY match_count DESC, j.Job_id DESC LIMIT 12`;
 
-    console.log("   - Job Matching Query running...");
     db.query(jobSql, searchTerms, (err, jobResult) => {
-        if (err) {
-            console.log("   - DB Error matching jobs:", err);
-            return res.json({ success: false, data: [] });
-        }
-        console.log(`   - Found ${jobResult.length} matches`);
-      res.json({ success: true, data: jobResult });
+      if (err) {
+        return res.json({ success: false, data: [] });
+      }
+
+      res.json({
+        success: "RELEVANT",
+        data: jobResult,
+        count: jobResult.length
+      });
+    });
+  });
+});
+
+/* ================================================= */
+/* ================= MY APPLICATIONS API (FIXED) === */
+/* ================================================= */
+app.get("/api/my-applications/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const sql = `
+    SELECT 
+      a.id,
+      c.Company_name AS company_name,
+      j.Job_title AS job_title,
+      a.status,
+      i.date AS intv_date,
+      i.time AS intv_time,
+      i.mode AS intv_mode,
+      i.location AS intv_location
+
+    FROM applied a
+    JOIN job j ON a.Job_id = j.Job_id
+    JOIN company c ON a.Company_id = c.Company_id
+    -- ✅ LEFT JOIN to show applications even without scheduled interviews
+    LEFT JOIN interview i ON i.candidateId = a.id
+    WHERE a.User_id = ?
+    ORDER BY a.id DESC, i.date ASC
+  `;
+
+  db.query(sql, [userId], (err, result) => {
+    if (err) {
+      return res.json({ success: false });
+    }
+
+    res.json({
+      success: true,
+      data: result,
     });
   });
 });
@@ -99,6 +169,20 @@ db.connect((err) => {
     console.log("Database Error:", err);
   } else {
     console.log("Database Connected");
+
+    // Auto-migration: Ensure Extra_section exists
+    const checkSql = "ALTER TABLE job_seeker ADD COLUMN Extra_section TEXT";
+    db.query(checkSql, (err) => {
+      if (err) {
+        if (err.code === "ER_DUP_COLUMN_NAME" || err.code === "ER_DUP_FIELDNAME") {
+          // Do nothing, column already exists
+        } else {
+          console.log("Migration Error:", err.code, ":", err.message);
+        }
+      } else {
+        console.log("Migration: Column 'Extra_section' added successfully.");
+      }
+    });
   }
 });
 
@@ -754,14 +838,15 @@ app.post("/api/usersignup", upload.single("Upload_photo"), (req, res) => {
     Post,
     Duration,
     Work_description,
+    Extra_section,
   } = req.body;
 
   const Upload_photo = req.file ? req.file.filename : "";
 
   const sql = `
   INSERT INTO job_seeker
-  (Name, Contact_no, email, password, Address, Education,Skills, Experience, Upload_photo,Company_name,Post,Duration,Work_description)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?)
+  (Name, Contact_no, email, password, Address, Education,Skills, Experience, Upload_photo,Company_name,Post,Duration,Work_description, Extra_section)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)
   `;
 
   db.query(
@@ -780,6 +865,7 @@ app.post("/api/usersignup", upload.single("Upload_photo"), (req, res) => {
       Post,
       Duration,
       Work_description,
+      Extra_section || "",
     ],
     (err, result) => {
       if (err) {
@@ -1065,49 +1151,7 @@ app.get("/api/shortlisted-candidates/:companyId", (req, res) => {
   });
 });
 
-//application
-app.get("/api/my-applications/:userId", (req, res) => {
-  const { userId } = req.params;
-
-  const sql = `
-    SELECT 
-      a.id,
-      c.Company_name AS company_name,
-      j.Job_title AS job_title,
-      a.status,
-      i.date AS intv_date,
-      i.time AS intv_time,
-      i.mode AS intv_mode,
-      i.location AS intv_location
-
-    FROM applied a
-
-    JOIN job j ON a.Job_id = j.Job_id
-    JOIN company c ON a.Company_id = c.Company_id
-
-    -- ✅ ONLY MATCHED INTERVIEWS
-    INNER JOIN interview i 
-      ON i.candidateId = a.id
-
-    WHERE a.User_id = ?
-
-    ORDER BY i.date ASC, i.time ASC
-  `;
-
-  db.query(sql, [userId], (err, result) => {
-    if (err) {
-      console.log("DB ERROR:", err);
-      return res.json({ success: false });
-    }
-
-    console.log("DATA:", result); // 🔥 DEBUG
-
-    res.json({
-      success: true,
-      data: result,
-    });
-  });
-});
+// Removed duplicate my-applications API (Moved to top with fixes)
 
 // ================= COmpany DASHBOARD =================
 app.get("/api/companyDashboard/:id", (req, res) => {
@@ -1250,10 +1294,13 @@ app.get("/api/adminDashboard", (req, res) => {
 
 // Get all job seekers
 app.get("/api/jobseekers", (req, res) => {
-  const sql =
-    "SELECT id, Name, email, Contact_no, Skills, status FROM job_seeker";
+  const sql = "SELECT * FROM job_seeker";
   db.query(sql, (err, result) => {
-    if (err) return res.status(500).json({ status: "error", message: err });
+    if (err) {
+      console.log("FETCH JOBSEEKERS ERROR:", err);
+      return res.status(500).json({ status: "error", message: err });
+    }
+    // Removed debug logs for cleaner console output
     res.json({ status: "success", data: result });
   });
 });
@@ -1291,133 +1338,59 @@ app.post("/api/toggleUserStatus", (req, res) => {
   );
 });
 
-// ======================================================
-// ==========================================================
-// ✅ GET USER (for edit form)
-app.get("/api/getuser/:id", (req, res) => {
-  const id = req.params.id;
-
-  // 🔥 IMPORTANT: change table name here if needed
-  const sql = "SELECT * FROM user WHERE id=?";
-
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      console.log("GET ERROR:", err);
-      return res.json({ success: false });
-    }
-
-    if (result.length > 0) {
-      res.json({ success: true, data: result[0] });
-    } else {
-      res.json({ success: false });
-    }
-  });
-});
-
 // ==========================================================
 // ✅ UPDATE USER (MAIN FIXED API)
 app.post("/api/updateuser/:id", upload.single("Upload_photo"), (req, res) => {
   const id = req.params.id;
-
-  console.log("BODY:", req.body);
-  console.log("FILE:", req.file);
+  const table = "job_seeker";
 
   const {
-    Name,
-    email,
-    Contact_no,
-    Address,
-    Education,
-    Skills,
-    Experience,
-    Company_name,
-    Post,
-    Duration,
-    Work_description,
+    Name, email, Contact_no, Address, Education, Skills, Experience,
+    Company_name, Post, Duration, Work_description, Extra_section
   } = req.body;
 
-  // ✅ CHECK IF DATA IS COMING
   if (!Name || !email) {
-    return res.json({ success: false, msg: "No data received from frontend" });
+    return res.json({ success: false, msg: "Name and email are required" });
   }
 
-  const table = "job_seeker"; // ✅ YOUR TABLE
+  let sql = "";
+  let values = [];
 
-  // 🔥 SIMPLE TEST QUERY FIRST (VERY IMPORTANT)
-  db.query(
-    `UPDATE ${table} SET Name=? WHERE id=?`,
-    [Name, id],
-    (err, result) => {
-      if (err) {
-        console.log("TEST ERROR:", err);
-        return res.json({ success: false, msg: err.message });
-      }
+  if (req.file) {
+    sql = `
+      UPDATE ${table} SET
+      Name=?, email=?, Contact_no=?, Address=?, Education=?, Skills=?, Experience=?,
+      Company_name=?, Post=?, Duration=?, Work_description=?, Extra_section=?,
+      Upload_photo=?
+      WHERE id=?
+    `;
+    values = [
+      Name, email, Contact_no, Address, Education, Skills, Experience,
+      Company_name, Post, Duration, Work_description, Extra_section || "",
+      req.file.filename, id
+    ];
+  } else {
+    sql = `
+      UPDATE ${table} SET
+      Name=?, email=?, Contact_no=?, Address=?, Education=?, Skills=?, Experience=?,
+      Company_name=?, Post=?, Duration=?, Work_description=?, Extra_section=?
+      WHERE id=?
+    `;
+    values = [
+      Name, email, Contact_no, Address, Education, Skills, Experience,
+      Company_name, Post, Duration, Work_description, Extra_section || "", id
+    ];
+  }
 
-      // ================= FULL UPDATE =================
-      let sql = "";
-      let values = [];
-
-      if (req.file) {
-        sql = `
-          UPDATE ${table} SET
-          Name=?, email=?, Contact_no=?, Address=?,
-          Education=?, Skills=?, Experience=?,
-          Company_name=?, Post=?, Duration=?, Work_description=?,
-          Upload_photo=?
-          WHERE id=?
-        `;
-
-        values = [
-          Name,
-          email,
-          Contact_no,
-          Address,
-          Education,
-          Skills,
-          Experience,
-          Company_name,
-          Post,
-          Duration,
-          Work_description,
-          req.file.filename,
-          id,
-        ];
-      } else {
-        sql = `
-          UPDATE ${table} SET
-          Name=?, email=?, Contact_no=?, Address=?,
-          Education=?, Skills=?, Experience=?,
-          Company_name=?, Post=?, Duration=?, Work_description=?
-          WHERE id=?
-        `;
-
-        values = [
-          Name,
-          email,
-          Contact_no,
-          Address,
-          Education,
-          Skills,
-          Experience,
-          Company_name,
-          Post,
-          Duration,
-          Work_description,
-          id,
-        ];
-      }
-
-      db.query(sql, values, (err, result) => {
-        if (err) {
-          console.log("SQL ERROR:", err);
-          return res.json({ success: false, msg: err.message });
-        }
-
-        console.log("UPDATE SUCCESS ✅");
-        res.json({ success: true });
-      });
-    },
-  );
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.log("SQL UPDATE ERROR:", err);
+      console.log("SQL Query:", sql);
+      console.log("Values:", values);
+      return res.json({ success: false, error: err.message });
+    }
+    res.json({ success: true });
+  });
 });
 
 // Sample blog data
@@ -1557,6 +1530,99 @@ app.post("/api/reply", (req, res) => {
     res.json({ success: true });
   });
 });
+
+// ================= GET COMPANY PROFILE =================
+app.get("/api/company/:id", (req, res) => {
+  const companyId = req.params.id;
+  const sql = "SELECT * FROM company WHERE Company_id = ?";
+  
+  db.query(sql, [companyId], (err, result) => {
+    if (err) {
+      console.log("Fetch Company Profile Error:", err);
+      return res.json({ success: false, message: "Database Error" });
+    }
+    if (result.length > 0) {
+      res.json(result[0]);
+    } else {
+      res.json({});
+    }
+  });
+});
+
+// ================= UPDATE COMPANY PROFILE =================
+app.put("/api/company/update/:id", upload.single("id_proof"), (req, res) => {
+
+  const id = req.params.id;
+
+  const {
+    Company_name,
+    contact_no,
+    email,
+    location,
+    website_URL,
+    description,
+    password,
+    company_person_name,
+    company_person_contact
+  } = req.body;
+
+  const id_proof = req.file ? req.file.filename : null;
+
+  let sql;
+  let values;
+
+  if (id_proof) {
+    sql = `
+      UPDATE company SET
+      Company_name=?, contact_no=?, email=?, location=?, website_URL=?,
+      description=?, password=?, company_person_name=?, company_person_contact=?, id_proof=?
+      WHERE Company_id=?`;
+
+    values = [
+      Company_name,
+      contact_no,
+      email,
+      location,
+      website_URL,
+      description,
+      password,
+      company_person_name,
+      company_person_contact,
+      id_proof,
+      id
+    ];
+  } else {
+    sql = `
+      UPDATE company SET
+      Company_name=?, contact_no=?, email=?, location=?, website_URL=?,
+      description=?, password=?, company_person_name=?, company_person_contact=?
+      WHERE Company_id=?`;
+
+    values = [
+      Company_name,
+      contact_no,
+      email,
+      location,
+      website_URL,
+      description,
+      password,
+      company_person_name,
+      company_person_contact,
+      id
+    ];
+  }
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.json({ success: false });
+    }
+
+    res.json({ success: true });
+  });
+
+});
+
 
 /* ================= SERVER ================= */
 

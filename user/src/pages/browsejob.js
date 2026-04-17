@@ -12,6 +12,15 @@ function Browsejob() {
   const [locationFilter, setLocationFilter] = useState(location.state?.searchFilters?.location || null);
   const [singleJobFilter, setSingleJobFilter] = useState(location.state?.singleJobId || null);
 
+  // ✅ UPDATE FILTERS IF STATE CHANGES (from Footer or other links)
+  useEffect(() => {
+    if (location.state?.categoryId) setCategoryFilter(location.state.categoryId);
+    if (location.state?.companyId) setCompanyFilter(location.state.companyId);
+    if (location.state?.searchFilters?.location) setLocationFilter(location.state.searchFilters.location);
+    if (location.state?.singleJobId) setSingleJobFilter(location.state.singleJobId);
+    if (location.state?.searchFilters?.keyword) setSearch(location.state.searchFilters.keyword);
+  }, [location.state]);
+
   const [jobs, setJobs] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState([]);
   const [loading, setLoading] = useState(true);

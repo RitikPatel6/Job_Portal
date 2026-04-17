@@ -1,16 +1,10 @@
-/* ===== GENERAL ===== */
-body {
-  font-family: 'Poppins', sans-serif;
-  background: #f4f6f9;
-  margin: 0;
-  color: #1e293b;
+/* ===== PAGE ===== */
+.candidates-page {
+  background: #f9fafb;
+  min-height: 100vh;
 }
 
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 20px;
-}
+
 /* ===== BANNER ===== */
 .candidates-banner {
   background: #f1f3f6;
@@ -20,118 +14,148 @@ body {
 }
 
 .candidates-banner h1 {
-  color: #1c1616;
-  font-size: 35px;
+ font-size: 2.3rem;
+  color: #001d38;
+  margin-bottom: 8px;
 }
 
-/* ===== SECTION ===== */
+/* ===== CONTAINER ===== */
 .candidates-container {
-  margin-top: 60px;
+  padding: 40px 0;
 }
 
-/* ===== GRID ===== */
+/* ===== GRID (4 per row) ===== */
 .candidates-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
+  grid-template-columns: repeat(4, 1fr); /* 👈 fixed 4 cards */
+  gap: 20px;
 }
 
 /* ===== CARD ===== */
 .candidate-card {
-  background: white;
-  padding: 25px;
-  text-align: center;
+  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-  transition: 0.3s;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  transition: 0.3s ease;
+  position: relative;
 }
 
 .candidate-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px);
+  border-color: #3b82f6;
+}
+
+/* ===== BADGE ===== */
+.candidate-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #10b981;
+  color: white;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
 }
 
 /* ===== IMAGE ===== */
 .candidate-thumb img {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   object-fit: cover;
 }
 
-/* ===== TEXT ===== */
+/* ===== NAME ===== */
 .candidate-card h4 {
-  margin: 8px 0;
-  font-size: 18px;
+  font-size: 16px;
+  color: #111827;
+  margin-bottom: 5px;
 }
 
-.candidate-card p {
-  color: #64748b;
-  font-size: 14px;
-  margin-bottom: 15px;
+/* ===== ROLE ===== */
+.candidate-post {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+/* ===== SKILLS ===== */
+.candidate-skills {
+  margin-bottom: 12px;
+}
+
+.skill-badge {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  margin: 2px;
 }
 
 /* ===== BUTTON ===== */
 .view-btn {
-  background: #3b82f6;
-  color: white;
-  padding: 8px 18px;
-  border: none;
-  border-radius: 20px;
+  background: transparent;
+  border: 1px solid #3b82f6;
+  color: #3b82f6;
+  padding: 6px 14px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 13px;
   transition: 0.3s;
-  font-size: 14px;
 }
 
 .view-btn:hover {
-  background: #2563eb;
+  background: #3b82f6;
+  color: white;
 }
 
 /* ===== PAGINATION ===== */
 .pagination {
-  margin-top: 50px;
-  text-align: center;
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
 .pagination button {
+  border: 1px solid #e5e7eb;
   background: white;
-  border: none;
-  padding: 8px 14px;
-  margin: 5px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
-  color: #1e293b;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
   transition: 0.3s;
 }
 
 .pagination button:hover {
-  background: #f97316;
-  color: white;
+  border-color: #3b82f6;
+  color: #3b82f6;
 }
 
-.pagination .active {
-  background: #f97316;
+.pagination button.active {
+  background: #3b82f6;
   color: white;
+  border-color: #3b82f6;
 }
 
 .pagination button:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .candidates-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* tablet */
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
   .candidates-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* mobile */
   }
-}
-.candidates-container.container{
-  margin-top: 100px;
 }

@@ -5,6 +5,10 @@ import ritikImage from "./ritik.jpeg";
 
 function Sidebar() {
 
+  const companyData = JSON.parse(sessionStorage.getItem("company") || "{}");
+  const companyName = companyData.Company_name || "Company Name";
+  const personName = companyData.company_person_name || "Contact Person";
+
   const toggleDropdown = (id) => {
     const menu = document.getElementById(id);
     menu.classList.toggle("show");
@@ -14,14 +18,14 @@ function Sidebar() {
     <div className="sidebar">
       <div className="profile-section">
         <img
-  src={ritikImage}
-  alt="profile"
-  className="profile-img"
-/>
+          src={ritikImage}
+          alt="profile"
+          className="profile-img"
+        />
 
         <div>
-          <h3>Ritik Patel</h3>
-          <p>Frontend Developer</p>
+          <h3>{companyName}</h3>
+          <p>{personName}</p>
         </div>
       </div>
 

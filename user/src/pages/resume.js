@@ -92,6 +92,13 @@ function Resume() {
             <p>{user.Work_description}</p>
           </div>
 
+          {user.Extra_section && (
+            <div className="section">
+              <h3>Additional Information(Projects/Achievements)</h3>
+              <p>{user.Extra_section}</p>
+            </div>
+          )}
+
           <button
             className="download-btn"
             onClick={() => window.print()}

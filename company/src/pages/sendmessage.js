@@ -258,7 +258,7 @@ function SendMessage() {
                     <option value="All">All Statuses</option>
                     <option value="Shortlisted">Only Shortlisted</option>
                     <option value="Rejected">Only Rejected</option>
-                    <option value="Interview Scheduled">Only Interview Scheduled</option>
+                    {/* <option value="Interview Scheduled">Only Interview Scheduled</option> */}
                   </select>
                 </div>
                 <div className="form-row">
@@ -338,7 +338,7 @@ function SendMessage() {
                     🎉 Congratulations (Shortlisted)
                   </button>
 
-                  <button
+                  {/* <button
                     type="button"
                     className="tmpl-btn"
                     onClick={() => {
@@ -347,7 +347,7 @@ function SendMessage() {
                     }}
                   >
                     📅 Interview Details
-                  </button>
+                  </button> */}
 
                   <button
                     type="button"

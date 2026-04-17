@@ -15,6 +15,7 @@ function Editresume() {
     Post: "",
     Duration: "",
     Work_description: "",
+    Extra_section: "",
   });
 
   const [file, setFile] = useState(null);
@@ -77,7 +78,7 @@ function Editresume() {
         alert("Updated Successfully");
         window.location = "/resume";
       } else {
-        alert(res.data.msg || "Update Failed");
+        alert(res.data.msg || res.data.error || "Update Failed");
       }
     } catch (err) {
       console.log(err);
@@ -112,6 +113,9 @@ function Editresume() {
           <input type="text" name="Duration" value={user.Duration || ""} onChange={handleChange} />
 
           <textarea name="Work_description" value={user.Work_description || ""} onChange={handleChange} />
+
+          <label>Additional Information (Projects/Achievements)</label>
+          <textarea name="Extra_section" value={user.Extra_section || ""} onChange={handleChange} placeholder="e.g. Other Projects, Achievements, etc." />
 
           <button type="submit" className="editresume-btn" disabled={loading}>
             {loading ? "Updating..." : "Update Resume"}

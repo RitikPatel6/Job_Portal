@@ -124,3 +124,18 @@
   }
 
 }
+.footer-categories li span {
+  color: #cbd5e1;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.footer-categories li span:hover {
+  color: #3b82f6;
+  padding-left: 5px;
+}
+
+h3{
+   color: #2563eb;
+}

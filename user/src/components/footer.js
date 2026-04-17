@@ -1,7 +1,14 @@
 import React from "react";
 import "./footer.css";
+import { useNavigate } from "react-router-dom";
 
 function Footer() {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryId) => {
+    navigate("/browsejob", { state: { categoryId } });
+  };
+
   return (
     <footer className="footer">
 
@@ -21,8 +28,8 @@ function Footer() {
           <h3>Quick Links</h3>
           <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/jobs">Browse Jobs</a></li>
-            <li><a href="/candidate">Candidates</a></li>
+            <li><a href="/browsejob">Browse Jobs</a></li>
+            <li><a href="/candidates">Candidates</a></li>
             <li><a href="/contact">Contact</a></li>
           </ul>
         </div>
@@ -30,11 +37,12 @@ function Footer() {
         {/* Categories */}
         <div className="footer-box">
           <h3>Categories</h3>
-          <ul>
-            <li><a href="#">Software</a></li>
-            <li><a href="#">Marketing</a></li>
-            <li><a href="#">Design</a></li>
-            <li><a href="#">Engineering</a></li>
+          <ul className="footer-categories">
+            <li><span onClick={() => handleCategoryClick(10)}>Software</span></li>
+            <li><span onClick={() => handleCategoryClick(7)}>Marketing</span></li>
+            <li><span onClick={() => handleCategoryClick(8)}>Design</span></li>
+            <li><span onClick={() => handleCategoryClick(6)}>Engineering</span></li>
+            <li><span onClick={() => handleCategoryClick(9)}>Support</span></li>
           </ul>
         </div>
 

@@ -131,16 +131,6 @@ function Manageprofile() {
             />
           </div>
 
-          <div className="form-group">
-            <label>Skills</label>
-            <textarea
-              name="skills"
-              value={profile.skills}
-              onChange={handleChange}
-              rows="3"
-            ></textarea>
-          </div>
-
           <button type="submit" className="update-btn">
             Update Profile
           </button>

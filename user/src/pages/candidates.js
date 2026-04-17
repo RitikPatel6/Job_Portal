@@ -1,30 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./candidates.css";
 import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 
 function Candidates() {
 
   const navigate = useNavigate();
 
-  const candidatesData = [
-    { id: 1, name: "Markary Jondon", job: "Software Engineer", img: "/img/candiateds/1.png", skills: "React, Node.js", exp: "3 Years", email: "markary@gmail.com", location: "USA" },
-    { id: 2, name: "John Smith", job: "UI/UX Designer", img: "/img/candiateds/2.png", skills: "Figma, Adobe XD", exp: "2 Years", email: "john@gmail.com", location: "UK" },
-    { id: 3, name: "Emily Watson", job: "Web Developer", img: "/img/candiateds/3.png", skills: "HTML, CSS, JS", exp: "4 Years", email: "emily@gmail.com", location: "Canada" },
-    { id: 4, name: "David Miller", job: "Data Analyst", img: "/img/candiateds/4.png", skills: "Python, SQL", exp: "3 Years", email: "david@gmail.com", location: "Germany" },
-    { id: 5, name: "Sophia Lee", job: "Frontend Developer", img: "/img/candiateds/5.png", skills: "React, Tailwind", exp: "2 Years", email: "sophia@gmail.com", location: "India" },
-    { id: 6, name: "James Brown", job: "Backend Developer", img: "/img/candiateds/6.png", skills: "Node, Express", exp: "5 Years", email: "james@gmail.com", location: "USA" },
-    { id: 7, name: "Olivia Taylor", job: "Product Manager", img: "/img/candiateds/7.png", skills: "Agile, Scrum", exp: "6 Years", email: "olivia@gmail.com", location: "Australia" },
-    { id: 8, name: "Michael Scott", job: "Software Engineer", img: "/img/candiateds/8.png", skills: "Java, Spring", exp: "4 Years", email: "michael@gmail.com", location: "USA" }
-  ];
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
+
+  const fetchCandidates = async () => {
+    try {
+      setLoading(true);
+      const res = await Axios.get("http://localhost:1337/api/jobseekers");
+      if (res.data.status === "success") {
+        // Filter active candidates
+        const activeCandidates = res.data.data.filter(c => c.status === 1);
+        setCandidates(activeCandidates);
+      }
+    } catch (err) {
+      console.log("Candidate Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const candidatesPerPage = 4;
+  const candidatesPerPage = 8; // Increased for better view on full page
 
   const indexOfLast = currentPage * candidatesPerPage;
   const indexOfFirst = indexOfLast - candidatesPerPage;
-  const currentCandidates = candidatesData.slice(indexOfFirst, indexOfLast);
+  const currentCandidates = candidates.slice(indexOfFirst, indexOfLast);
 
-  const totalPages = Math.ceil(candidatesData.length / candidatesPerPage);
+  const totalPages = Math.ceil(candidates.length / candidatesPerPage);
 
   return (
     <div className="candidates-page">
@@ -36,29 +49,45 @@ function Candidates() {
       <section className="candidates-container container">
 
         <div className="candidates-grid">
-          {currentCandidates.map((candidate) => (
-            <div className="candidate-card" key={candidate.id}>
+          {loading ? (
+            <p>Loading candidates...</p>
+          ) : currentCandidates.length > 0 ? (
+            currentCandidates.map((candidate, index) => (
+              <div className="candidate-card" key={candidate.id}>
+                <div className="candidate-badge">Available</div>
+                <div className="candidate-thumb">
+                  <img 
+                    src={candidate.Upload_photo ? `http://localhost:1337/uploads/${candidate.Upload_photo}` : `/img/candiateds/${(index % 4) + 1}.png`} 
+                    alt={candidate.Name} 
+                    onError={e => { e.target.onerror=null; e.target.src="/img/candiateds/1.png";}} 
+                  />
+                </div>
 
-              <div className="candidate-thumb">
-                <img src={candidate.img} alt={candidate.name} />
+                <h4>{candidate.Name}</h4>
+                <p className="candidate-post">{candidate.Post || "Job Seeker"}</p>
+
+                <div className="candidate-skills">
+                  {(candidate.Skills || "React, Node, JS").split(",").slice(0, 3).map((skill, sIdx) => (
+                    <span key={sIdx} className="skill-badge">{skill.trim()}</span>
+                  ))}
+                </div>
+
+                <button
+                  className="view-btn"
+                  onClick={() =>
+                    navigate(`/candidate/${candidate.id}`, {
+                      state: candidate // ✅ full object passed
+                    })
+                  }
+                >
+                  View Profile
+                </button>
+
               </div>
-
-              <h4>{candidate.name}</h4>
-              <p>{candidate.job}</p>
-
-              <button
-                className="view-btn"
-                onClick={() =>
-                  navigate(`/candidate/${candidate.id}`, {
-                    state: candidate // ✅ full object passed
-                  })
-                }
-              >
-                View Profile
-              </button>
-
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No candidates found.</p>
+          )}
         </div>
 
         {/* Pagination */}

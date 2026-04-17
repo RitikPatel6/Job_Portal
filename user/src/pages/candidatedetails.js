@@ -13,26 +13,47 @@ function Candidatedetails() {
   }
 
   return (
-    <div className="profile-page container">
-
-      <button onClick={() => navigate(-1)}>⬅ Back</button>
+    <div className="profile-page">
+      <div className="back-btn-container">
+        <button className="back-btn" onClick={() => navigate(-1)}>⬅ Back</button>
+      </div>
 
       <div className="profile-card">
-
         <img
-          src={candidate.img}
-          alt={candidate.name}
+          src={candidate.Upload_photo ? `http://localhost:1337/uploads/${candidate.Upload_photo}` : "/img/candiateds/1.png"}
+          alt={candidate.Name}
           onError={(e) => {
-            e.target.src = "/img/candidates/default.png";
+            e.target.src = "/img/candiateds/1.png";
           }}
         />
 
-        <h2>{candidate.name}</h2>
-        <p><strong>Job:</strong> {candidate.job}</p>
-        <p><strong>Experience:</strong> {candidate.exp}</p>
-        <p><strong>Skills:</strong> {candidate.skills}</p>
-        <p><strong>Email:</strong> {candidate.email}</p>
-        <p><strong>Location:</strong> {candidate.location}</p>
+        <h2>{candidate.Name}</h2>
+        <span className="post-title">{candidate.Post || "Job Seeker"}</span>
+
+        <div className="info-grid">
+          <div className="info-item">
+            <strong>Experience</strong>
+            <p>{candidate.Experience || "N/A"}</p>
+          </div>
+          <div className="info-item">
+            <strong>Skills</strong>
+            <p>{candidate.Skills || "N/A"}</p>
+          </div>
+          <div className="info-item">
+            <strong>Email</strong>
+            <p>{candidate.email}</p>
+          </div>
+          <div className="info-item">
+            <strong>Contact</strong>
+            <p>{candidate.Contact_no || "N/A"}</p>
+          </div>
+          {candidate.Extra_section && (
+            <div className="info-item" style={{ gridColumn: "1 / -1" }}>
+              <strong>Additional Information</strong>
+              <p>{candidate.Extra_section}</p>
+            </div>
+          )}
+        </div>
 
       </div>
     </div>

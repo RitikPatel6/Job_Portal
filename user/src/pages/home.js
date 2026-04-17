@@ -17,9 +17,11 @@ function Home() {
   const [companies, setCompanies] = useState([]);
   const[showAll,setShowAll] = useState(false);
   const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [candidates, setCandidates] = useState([]);
 
 useEffect(() => {
   fetchCompanies();
+  fetchCandidates();
 }, []);
 
   const [filters, setFilters] = useState({
@@ -146,6 +148,19 @@ useEffect(() => {
     }
   };
 
+  const fetchCandidates = async () => {
+    try {
+      const res = await Axios.get("http://localhost:1337/api/jobseekers");
+      if (res.data.status === "success") {
+        // Filter active candidates
+        const activeCandidates = res.data.data.filter(c => c.status === 1);
+        setCandidates(activeCandidates);
+      }
+    } catch (err) {
+      console.log("Candidate Fetch Error:", err);
+    }
+  };
+
   // ================= HANDLE FILTER =================
   const handleChange = (e) => {
     setFilters({
@@ -201,12 +216,16 @@ useEffect(() => {
 
   // ================= PLACEHOLDER IMAGES & CANDIDATES =================
   const images = ["/img/svg_icon/1.svg","/img/svg_icon/2.svg","/img/svg_icon/3.svg","/img/svg_icon/4.svg"];
-  const candidates = [
-    { id: 1, name: "Markary Jondon", job: "Software Engineer", img: "/img/candiateds/1.png" },
-    { id: 2, name: "John Smith", job: "UI/UX Designer", img: "/img/candiateds/2.png" },
-    { id: 3, name: "Emily Watson", job: "Web Developer", img: "/img/candiateds/3.png" },
-    { id: 4, name: "David Miller", job: "Data Analyst", img: "/img/candiateds/4.png" }
+  
+  // Static fallback if no candidates yet (optional, but good for design)
+  const defaultCandidates = [
+    { id: 1, Name: "Markary Jondon", Post: "Software Engineer", Upload_photo: null },
+    { id: 2, Name: "John Smith", Post: "UI/UX Designer", Upload_photo: null },
+    { id: 3, Name: "Emily Watson", Post: "Web Developer", Upload_photo: null },
+    { id: 4, Name: "David Miller", Post: "Data Analyst", Upload_photo: null }
   ];
+
+  const displayCandidates = candidates.length > 0 ? candidates : defaultCandidates;
 
   const testimonials = [
     {
@@ -238,8 +257,8 @@ useEffect(() => {
             <h1>Find Your Dream Job Today</h1>
             <p>Discover thousands of job opportunities with all the information you need. It's your future.</p>
             <div className="hero-buttons">
-              <Link to="/uploadresume"><button className="Btn-Primary">Upload Resume</button></Link>
-              <Link to="/browsejob"><button className="btn-secondary">Browse Jobs</button></Link>
+              {/* <Link to="/uploadresume"><button className="Btn-Primary">Upload Resume</button></Link> */}
+              <Link to="/browsejob"><button className="BTN-Secondary">Browse Jobs</button></Link>
             </div>
           </div>
           <div className="hero-image">
@@ -333,11 +352,11 @@ useEffect(() => {
   </div>
 </section>
 {/* ✅ MOVE OUTSIDE MAP */}
-    <div className="About-Cta">
-      <Link to="/browsejob">
-        <button className="Btn-Secondary">Browse Jobs</button>
-      </Link>
-    </div>
+   <div className="About-CTA">
+  <Link to="/browsejob">
+    <button className="BTN-Secondary">Browse Jobs</button>
+  </Link>
+</div>
 
   {/* ⭐ RECOMMENDED JOBS */}
   {userId && (
@@ -391,10 +410,10 @@ useEffect(() => {
       {/* POPULAR CATEGORIES */}
       <section className="categories-section">
         <div className="container">
-          <h2 className="section-title">Popular Categories</h2>
+          <h2 className="Section-Title">Popular Categories</h2>
           <div className="categories-grid">
            {displayedCategories.length > 0 ? displayedCategories.map((cat, index) => {
-              const icons = ["🎨","📈","💻","⚙️","📊","🛒","📞","🏥"];
+              const icons = ["💻","📈","🎨","⚙️","📊","🛒","📞","🏥"];
               return (
                 <div 
                   className="category-card" 
@@ -472,23 +491,33 @@ useEffect(() => {
   </div>
 </section>
 
-      {/* TOP CANDIDATES */}
+{/* candidate */}
       <section className="candidate-section">
         <div className="container">
           <div className="section-header">
-            <h2 className="section-title">Top Candidates</h2>
+            <h2 className="Section-Title">Top Candidates</h2>
             <p className="section-subtitle">Discover skilled professionals ready to work</p>
           </div>
           <div className="candidate-grid">
-            {candidates.map(item => (
+            {displayCandidates.slice(0, 4).map((item, index) => (
               <div className="candidate-card" key={item.id}>
+                <div className="candidate-badge">Available</div>
                 <div className="candidate-img">
-                  <img src={item.img} alt={item.name} onError={e => { e.target.onerror=null; e.target.src="/img/candidates/default.png";}} />
+                  <img 
+                    src={item.Upload_photo ? `http://localhost:1337/uploads/${item.Upload_photo}` : `/img/candiateds/${(index % 4) + 1}.png`} 
+                    alt={item.Name} 
+                    onError={e => { e.target.onerror=null; e.target.src="/img/candiateds/1.png";}} 
+                  />
                 </div>
                 <div className="candidate-info">
-                  <h4>{item.name}</h4>
-                  <p>{item.job}</p>
-                  <button className="btn-view">View Profile</button>
+                  <h4>{item.Name}</h4>
+                  <p className="candidate-post">{item.Post || "Job Seeker"}</p>
+                  <div className="candidate-skills">
+                    {(item.Skills || "React, Node, JS").split(",").slice(0, 3).map((skill, sIdx) => (
+                      <span key={sIdx} className="skill-badge">{skill.trim()}</span>
+                    ))}
+                  </div>
+                  <button className="btn-view" onClick={() => navigate(`/candidate/${item.id}`, { state: item })}>View Profile</button>
                 </div>
               </div>
             ))}
@@ -497,7 +526,7 @@ useEffect(() => {
       </section>
 
       {/* TESTIMONIAL AREA */}
-      <section className="testimonial_area">
+      {/* <section className="testimonial_area">
         <div className="container">
           <div className="section_title text-center"><h3>Testimonials</h3></div>
           <div className="testimonial_grid">
@@ -514,7 +543,7 @@ useEffect(() => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
     </>
   );

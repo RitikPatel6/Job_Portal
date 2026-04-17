@@ -98,17 +98,17 @@ function Aboutas() {
         <section className="about-stats">
           <div className="stats-grid">
             <div className="stat-card">
-              <h2>5000+</h2>
+              <h2>8+</h2>
               <p>Jobs Available</p>
             </div>
 
             <div className="stat-card">
-              <h2>2000+</h2>
+              <h2>2+</h2>
               <p>Companies</p>
             </div>
 
             <div className="stat-card">
-              <h2>10,000+</h2>
+              <h2>3+</h2>
               <p>Job Seekers</p>
             </div>
 

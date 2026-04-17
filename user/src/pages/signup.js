@@ -25,6 +25,7 @@ function Signup() {
     const Post = document.getElementById("Post")?.value;
     const Duration = document.getElementById("Duration")?.value;
     const Work_description = document.getElementById("Work_description")?.value;
+    const Extra_section = document.getElementById("Extra_section")?.value;
 
     if (!Name || !Contact_no || !email || !password) {
       Swal.fire({
@@ -54,6 +55,8 @@ function Signup() {
       formData.append("Work_description", Work_description);
     }
 
+    formData.append("Extra_section", Extra_section || "");
+
     Axios.post("http://localhost:1337/api/usersignup", formData, {
       headers: { "Content-Type": "multipart/form-data" }
     })
@@ -68,7 +71,7 @@ function Signup() {
         } else {
           Swal.fire({
             icon: "error",
-            title: response.data.message
+            title: response.data.message || response.data.error || "Signup Failed"
           });
         }
       })
@@ -96,34 +99,34 @@ function Signup() {
 
           <form onSubmit={Userregister}>
 
-            <label>Name</label>
+            <label>Name*</label>
             <input type="text" id="Name" required />
 
-            <label>Contact Number</label>
+            <label>Contact Number*</label>
             <input type="number" id="Contact_no" required />
 
-            <label>Email</label>
+            <label>Email*</label>
             <input type="email" id="email" required />
 
-            <label>Password</label>
+            <label>Password*</label>
             <input type="password" id="password" required />
 
-            <label>Address</label>
+            <label>Address*</label>
             <textarea id="Address"></textarea>
 
-            <label>Education</label>
+            <label>Education*</label>
             <textarea id="Education"></textarea>
 
-            <label>Skills</label>
+            <label>Skills*</label>
             <textarea id="Skills"></textarea>
 
-            <label>Experience Details</label>
+            <label>Experience Details*</label>
             <textarea id="Experience"></textarea>
 
             
 
             {/* Experience Dropdown */}
-            <label>Experience (Years)</label>
+            <label>Experience (Years)*</label>
             <select class="form-control"
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
@@ -140,20 +143,24 @@ function Signup() {
             {/* CONDITIONAL FIELDS */}
             {experience !== "0" && (
               <>
-                <label>Company Name</label>
+                <label>Company Name*</label>
                 <input type="text" id="Company_name" />
 
-                <label>Post</label>
+                <label>Post*</label>
                 <input type="text" id="Post" />
 
-                <label>Duration</label>
+                <label>Duration*</label>
                 <input type="text" id="Duration" />
 
-                <label>Work Description</label>
+                <label>Work Description*</label>
                 <textarea id="Work_description"></textarea>
               </>
             )}
-            <label>Upload Photo</label>
+
+            <label> Projects/Achievements</label>
+            <textarea id="Extra_section" placeholder="e.g. Other Projects, Achievements, etc."></textarea>
+
+            <label>Upload Photo*</label>
             <input type="file" id="Upload_photo" />
 
             <button type="submit" className="signup-btn">
