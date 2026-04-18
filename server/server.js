@@ -170,18 +170,10 @@ db.connect((err) => {
   } else {
     console.log("Database Connected");
 
-    // Auto-migration: Ensure Extra_section exists
-    const checkSql = "ALTER TABLE job_seeker ADD COLUMN Extra_section TEXT";
-    db.query(checkSql, (err) => {
-      if (err) {
-        if (err.code === "ER_DUP_COLUMN_NAME" || err.code === "ER_DUP_FIELDNAME") {
-          // Do nothing, column already exists
-        } else {
-          console.log("Migration Error:", err.code, ":", err.message);
-        }
-      } else {
-        console.log("Migration: Column 'Extra_section' added successfully.");
-      }
+    // Ensure columns exist
+    db.query("ALTER TABLE job_seeker ADD COLUMN Extra_section TEXT", (err) => {});
+    db.query("ALTER TABLE job_seeker ADD COLUMN is_top INT DEFAULT 0", (err) => {
+        if (!err) console.log("Migration: 'is_top' column confirmed.");
     });
   }
 });
@@ -845,8 +837,8 @@ app.post("/api/usersignup", upload.single("Upload_photo"), (req, res) => {
 
   const sql = `
   INSERT INTO job_seeker
-  (Name, Contact_no, email, password, Address, Education,Skills, Experience, Upload_photo,Company_name,Post,Duration,Work_description, Extra_section)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)
+  (Name, Contact_no, email, password, Address, Education,Skills, Experience, Upload_photo,Company_name,Post,Duration,Work_description, Extra_section, is_top)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
   `;
 
   db.query(
@@ -1294,15 +1286,60 @@ app.get("/api/adminDashboard", (req, res) => {
 
 // Get all job seekers
 app.get("/api/jobseekers", (req, res) => {
-  const sql = "SELECT * FROM job_seeker";
-  db.query(sql, (err, result) => {
+  const { isTop } = req.query;
+  let sql = "SELECT *, COALESCE(is_top, 0) AS is_top FROM job_seeker";
+  const params = [];
+
+  if (isTop === "true") {
+    sql += " WHERE is_top = 1 AND status = 1";
+  }
+
+  db.query(sql, params, (err, result) => {
     if (err) {
       console.log("FETCH JOBSEEKERS ERROR:", err);
       return res.status(500).json({ status: "error", message: err });
     }
-    // Removed debug logs for cleaner console output
-    res.json({ status: "success", data: result });
+    res.json({ status: "success", data: result, debug: "debug-v1" });
   });
+});
+
+// Toggle Top Candidate status
+app.post("/toggle-top", (req, res) => {
+  const { id } = req.body;
+  if (!id)
+    return res
+      .status(400)
+      .json({ status: "error", message: "User ID required" });
+
+  db.query(
+    "SELECT is_top FROM job_seeker WHERE id = ?",
+    [id],
+    (err, result) => {
+      if (err) {
+        console.error("SELECT ERROR:", err);
+        return res.status(500).json({ status: "error", message: "Database Select Error: " + err.message });
+      }
+      if (result.length === 0)
+        return res
+          .status(404)
+          .json({ status: "error", message: "User not found" });
+
+      const currentIsTop = result[0].is_top || 0;
+      const newIsTop = currentIsTop == 1 ? 0 : 1;
+      
+      db.query(
+        "UPDATE job_seeker SET is_top = ? WHERE id = ?",
+        [newIsTop, id],
+        (err) => {
+          if (err) {
+             console.error("UPDATE ERROR:", err);
+             return res.status(500).json({ status: "error", message: "Database Update Error: " + err.message });
+          }
+          res.json({ status: "success", newIsTop: Number(newIsTop) });
+        }
+      );
+    }
+  );
 });
 
 // Toggle user status (active/block)

@@ -150,7 +150,7 @@ useEffect(() => {
 
   const fetchCandidates = async () => {
     try {
-      const res = await Axios.get("http://localhost:1337/api/jobseekers");
+      const res = await Axios.get("http://localhost:1337/api/jobseekers?isTop=true");
       if (res.data.status === "success") {
         // Filter active candidates
         const activeCandidates = res.data.data.filter(c => c.status === 1);
@@ -225,7 +225,7 @@ useEffect(() => {
     { id: 4, Name: "David Miller", Post: "Data Analyst", Upload_photo: null }
   ];
 
-  const displayCandidates = candidates.length > 0 ? candidates : defaultCandidates;
+  const displayCandidates = candidates;
 
   const testimonials = [
     {
@@ -492,6 +492,7 @@ useEffect(() => {
 </section>
 
 {/* candidate */}
+{displayCandidates.length > 0 && (
       <section className="candidate-section">
         <div className="container">
           <div className="section-header">
@@ -524,6 +525,7 @@ useEffect(() => {
           </div>
         </div>
       </section>
+      )}
 
       {/* TESTIMONIAL AREA */}
       {/* <section className="testimonial_area">

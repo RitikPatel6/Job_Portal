@@ -41,9 +41,26 @@ function MonitoringJobSeeker() {
       }
     } catch (err) {
       console.error(err);
-      Swal.fire("Error", "Something went wrong", "error");
+      Swal.fire("Error", err.response?.data?.message || err.message || "Something went wrong", "error");
     }
   };
+
+  // Toggle Top Candidate
+  const toggleTopCandidate = async (id) => {
+    try {
+      const res = await Axios.post("http://localhost:1337/toggle-top", { id });
+      if (res.data.status === "success") {
+        Swal.fire("Updated", "Top candidate status changed", "success");
+        setUsers(prev => prev.map(u => Number(u.id) === Number(id) ? { ...u, is_top: Number(res.data.newIsTop) } : u));
+      } else {
+        Swal.fire("Error", "Could not update top status", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", err.response?.data?.message || err.message || "Something went wrong", "error");
+    }
+  };
+
 
   const toggleSkills = (id) => {
     setUsers(prev =>
@@ -83,6 +100,7 @@ function MonitoringJobSeeker() {
               <th className="admin">Email</th>
               <th className="admin">Contact</th>
               <th className="admin">Skills</th>
+              <th className="admin">Top</th>
               <th className="admin">Status</th>
             </tr>
           </thead>
@@ -115,6 +133,29 @@ function MonitoringJobSeeker() {
                             {user.skillsExpanded ? "▲ Show Less" : "▼ Read More"}
                           </span>
                         )}
+                      </div>
+                    </td>
+
+                    <td>
+                      <div className="status-cell">
+                        <button 
+                          className={`btn-top ${user.is_top ? "is-top" : ""}`}
+                          onClick={() => toggleTopCandidate(user.id)}
+                          style={{
+                                background: user.is_top ? "#ffc107" : "#f1f1f1",
+                                border: "1px solid #ddd",
+                                borderRadius: "4px",
+                                padding: "4px 8px",
+                                cursor: "pointer",
+                                fontSize: "0.85rem",
+                                fontWeight: "600",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px"
+                          }}
+                        >
+                          {user.is_top ? "⭐ Top" : "☆ Set Top"}
+                        </button>
                       </div>
                     </td>
 
