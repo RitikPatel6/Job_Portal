@@ -1,5 +1,5 @@
 [build]
-  command = "npm install --prefix user && npm run build --prefix user"
+  command = "cd user && npm install --legacy-peer-deps && CI=false npm run build"
   publish = "user/build"
 
 [[redirects]]
