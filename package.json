@@ -1,0 +1,17 @@
+{
+  "name": "job-portal-main",
+  "version": "1.0.0",
+  "description": "Job Portal Monorepo",
+  "scripts": {
+    "install:all": "npm install --prefix user && npm install --prefix admin && npm install --prefix company && npm install --prefix server",
+    "build:user": "npm run build --prefix user",
+    "build:admin": "npm run build --prefix admin",
+    "build:company": "npm run build --prefix company",
+    "build:all": "npm run build:user && npm run build:admin && npm run build:company",
+    "start:user": "npm start --prefix user",
+    "start:admin": "npm start --prefix admin",
+    "start:company": "npm start --prefix company",
+    "start:server": "npm start --prefix server",
+    "dev": "npm run start:server & npm run start:user"
+  }
+}

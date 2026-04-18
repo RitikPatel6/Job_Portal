@@ -32,17 +32,17 @@ function Aboutas() {
       id:1,
       name:"Ritik Patel",
       role:"Project Developer",
-      img:"/img/candiateds/1.png"
+      img:"/img/candiateds/12.png"
     },
     {
       id:2,
-      name:"John Smith",
+      name:"Kunjal Patel",
       role:"UI Designer",
-      img:"/img/candiateds/2.png"
+      img:"/img/candiateds/11.png"
     },
     {
       id:3,
-      name:"Sara Johnson",
+      name:"Raj Patel",
       role:"Marketing Head",
       img:"/img/candiateds/3.png"
     }

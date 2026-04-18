@@ -12,7 +12,7 @@ function Browsejob() {
   const [locationFilter, setLocationFilter] = useState(location.state?.searchFilters?.location || null);
   const [singleJobFilter, setSingleJobFilter] = useState(location.state?.singleJobId || null);
 
-  // ✅ UPDATE FILTERS IF STATE CHANGES (from Footer or other links)
+  //  UPDATE FILTERS IF STATE CHANGES (from Footer or other links)
   useEffect(() => {
     if (location.state?.categoryId) setCategoryFilter(location.state.categoryId);
     if (location.state?.companyId) setCompanyFilter(location.state.companyId);
@@ -108,7 +108,7 @@ function Browsejob() {
   const applyJob = async (job) => {
 
     if (!userId) {
-      alert("Please login first ❌");
+      alert("Please login first ");
       navigate("/login");
       return;
     }
@@ -126,7 +126,7 @@ function Browsejob() {
 
       if (res.data.success) {
 
-        alert("Applied Successfully ✅");
+        alert("Applied Successfully ");
 
         setAppliedJobs(prev =>
           prev.includes(Number(job.Job_id))
@@ -140,7 +140,7 @@ function Browsejob() {
 
     } catch (err) {
       console.log(err);
-      alert("Error ❌");
+      alert("Error ");
     }
   };
 
@@ -238,7 +238,7 @@ function Browsejob() {
                       />
 
                       <div>
-                        {/* ✅ CLICK ONLY TITLE */}
+                        {/*  CLICK ONLY TITLE */}
                         <h4
                           onClick={() => navigate(`/jobdetails/${job.Job_id}`)}
                           style={{
@@ -259,7 +259,7 @@ function Browsejob() {
                     <div>
                       {isApplied ? (
                         <button className="btn-applied" disabled>
-                          Applied ✅
+                          Applied 
                         </button>
                       ) : (
                         <button
@@ -281,7 +281,7 @@ function Browsejob() {
             </div>
 
           ) : (
-            <p>No Jobs Found ❌</p>
+            <p>No Jobs Found </p>
           )}
 
         </div>

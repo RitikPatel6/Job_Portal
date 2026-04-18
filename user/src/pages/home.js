@@ -50,16 +50,16 @@ useEffect(() => {
   try {
     const res = await Axios.get("http://localhost:1337/api/companies");
 
-    // ✅ Handle all possible API formats
+    //  Handle all possible API formats
     const data = res.data.data || res.data || [];
 
-    // ✅ Ensure always array
+    //  Ensure always array
     setCompanies(Array.isArray(data) ? data : []);
 
   } catch (err) {
     console.log("Company Fetch Error:", err);
 
-    // ✅ fallback to empty
+    //  fallback to empty
     setCompanies([]);
   }
 };
@@ -178,7 +178,7 @@ useEffect(() => {
   const applyJob = async (job) => {
 
     if (!userId) {
-      alert("Please login first ❌");
+      alert("Please login first ");
       window.location.href = "/login";
       return;
     }
@@ -194,15 +194,15 @@ useEffect(() => {
       );
 
       if (res.data.success) {
-        alert("Applied Successfully ✅");
+        alert("Applied Successfully ");
         setAppliedJobs((prev) => [...prev, Number(job.Job_id)]);
       } else {
-        alert(res.data.message || "Already Applied ❌");
+        alert(res.data.message || "Already Applied ");
       }
 
     } catch (err) {
       console.log("Apply Error:", err);
-      alert("Error ❌");
+      alert("Error ");
     }
   };
 
@@ -330,7 +330,7 @@ useEffect(() => {
 
             {isApplied ? (
               <button className="btn-applied" disabled>
-                Applied ✅
+                Applied 
               </button>
             ) : (
               <button
@@ -390,7 +390,7 @@ useEffect(() => {
 
                 {isApplied ? (
                   <button className="btn-applied" disabled>
-                    Applied ✅
+                    Applied 
                   </button>
                 ) : (
                   <button
@@ -474,7 +474,7 @@ useEffect(() => {
                 alt={company.Company_name}
               />
 
-              {/* ✅ THIS IS YOUR DYNAMIC NAME */}
+              {/*  THIS IS YOUR DYNAMIC NAME */}
               <h4>{company.Company_name}</h4>
 
               {/* OPTIONAL */}

@@ -58,7 +58,7 @@ function Resume() {
 
         {/* RIGHT MAIN SECTION */}
         <div className="resume-right">
-          <h1>{user.Name}'s Resume</h1>
+          <h1>{user.Name} Resume</h1>
 
           <div className="section">
             <h3>Education</h3>
@@ -94,7 +94,7 @@ function Resume() {
 
           {user.Extra_section && (
             <div className="section">
-              <h3>Additional Information(Projects/Achievements)</h3>
+              <h3>Projects/Achievements</h3>
               <p>{user.Extra_section}</p>
             </div>
           )}
